@@ -1,0 +1,204 @@
+/* Reset mặc định */
+  
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #111;
+  }
+  
+  /* PHẦN HERO / HEADER */
+  .hero {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #f7f7fb;
+  }
+  
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .hero p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 30px;
+    font-weight: 700;
+  }
+  
+  .search-bar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .search-bar input,
+  .search-bar select,
+  .search-bar button {
+    padding: 10px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+  }
+  
+  .search-bar button {
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .search-bar button:hover {
+    background-color: #555;
+  }
+  
+  /* PHẦN VIỆC LÀM NỔI BẬT */
+  .highlight-jobs {
+    padding: 50px 40px;
+    background-color: #fdfdfd;
+    text-align: center;
+  }
+  
+  .highlight-jobs h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    padding-left: 80px;
+    text-align: left;
+
+  }
+  
+  .highlight-jobs p {
+    font-size: 16px;
+    margin-bottom: 8px;
+    padding-left: 80px;
+    text-align: left;
+  }
+  
+  .explore-btn {
+    margin-top: 20px;
+    padding: 10px 18px;
+    border: 1px solid #aaa;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .explore-btn:hover {
+    background-color: #f2f2f2;
+  }
+  
+  /* PHẦN QUY TRÌNH ỨNG TUYỂN */
+  .process {
+    padding: 50px 40px;
+    background-color: #f7f7fb;
+    text-align: center;
+  }
+  
+  .process h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    padding-left: 80px;
+    text-align: left;
+  }
+  
+  .process p {
+    color: #666;
+    margin-bottom: 40px;
+    padding-left: 80px;
+    text-align: left;
+  }
+  
+  .steps {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    
+  }
+  
+  .step {
+    text-align: center;
+    max-width: 180px;
+  }
+  .step h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+  }
+  .step p{
+    margin-bottom: 10px;
+    padding-left: 60px;
+
+  }
+  
+  .step .circle {
+    width: 60px;
+    height: 60px;
+    background-color: #eee;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .step.active .circle {
+    border: 3px solid hotpink;
+    background-color: #fff;
+    color: black;
+  }
+  
+  /* PHẦN LÝ DO CHỌN */
+  .why-choose {
+    padding: 50px 40px;
+    background-color: #fff;
+    text-align: center;
+  }
+  
+  .why-choose h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    padding-left: 80px;
+    text-align: left;
+  }
+  
+  .why-choose p {
+    color: #555;
+    padding-left: 80px;
+    text-align: left;
+}
+  
+  .reasons ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    margin: 24px 0px 0px;
+  }
+  
+  .reasons li {
+    font-size: 16px;
+    margin-bottom: 15px;
+    padding-left: 80px;
+    position: relative;
+  }
+  
+  .reasons li::before {
+    position: absolute;
+    left: 0;
+    color: hotpink;
+  }
+  

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../../../admin/template/assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../../admin/template/assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="../../../admin/template/assets/css/style.css">
+    <style>
+        body {
+            background-color: #eaf6ff;
+            color: #333333;
+            font-family: Arial, sans-serif;
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-container h4 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .auth-container p {
+            margin-bottom: 20px;
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        .auth-container .form-label {
+            font-weight: bold;
+            color: #333333;
+        }
+
+        .auth-container .btn {
+            margin-top: 20px;
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+
+        .auth-container .btn:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .auth-container .text-center a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .auth-container .text-center a:hover {
+            text-decoration: underline;
+        }
+
+        .input-group-text {
+            background-color: #f0f0f0;
+            color: #333333;
+        }
+
+        .form-control {
+            background-color: #ffffff;
+            color: #333333;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            background-color: #ffffff;
+            color: #333333;
+            border-color: #007bff;
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <h4 class="mb-1">Welcome to Kaira! 👋</h4>
+        <p class="mb-6">Please sign-in to your account and start the adventure</p>
+        <form id="formAuthentication" class="mb-6" action="index.html">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email or Username</label>
+                <div class="input-group input-group-merge">
+                    <span class="input-group-text"><i class="mdi mdi-account"></i></span>
+                    <input type="text" class="form-control" id="email" name="email-username"
+                        placeholder="Enter your email or username" autofocus />
+                </div>
+            </div>
+            <div class="mb-3 form-password-toggle">
+                <label class="form-label" for="password">Password</label>
+                <div class="input-group input-group-merge">
+                    <span class="input-group-text"><i class="mdi mdi-lock"></i></span>
+                    <input type="password" id="password" class="form-control" name="password" placeholder="••••••••" />
+                    <span class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off"></i></span>
+                </div>
+            </div>
+            <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
+            <div class="text-center">
+                <a href="forgot-password.html">Forgot Password?</a>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

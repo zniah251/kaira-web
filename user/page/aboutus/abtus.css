@@ -1,0 +1,292 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #111;
+  }
+  
+  .breadcrumb {
+    padding: 40px 40px;
+    margin-left: 40px;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #444;
+  }
+  .breadcrumb-separator {
+    margin: 0 8px; /* khoảng cách ngang trái/phải */
+  }
+  
+  
+  .breadcrumb a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .abt-header {
+    text-align: center;
+    margin-top: 10px;
+    flex: 1;
+    margin-bottom: 4px;
+  }
+  
+  .abt-header h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .abt-header p {
+    font-size: 16px;
+    color: #666;
+  }
+  .team-photo {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .tabs-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    margin-top: 0;
+  }
+  
+  .tabs-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 20px;
+
+  }
+  
+  .tab {
+    padding: 16px 40px;
+    border: 2px solid #eee;
+    border-radius: 40px;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: white;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  
+  .tab span {
+    margin-left: 8px;
+  }
+  
+  .tab.active {
+    background-color: #fcecff; /* Màu hồng nhạt */
+    color: #000;
+    border: none;
+  }
+  
+  .about-section {
+    width: 100vw;
+    padding: 20px 10px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .about-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+  }
+  
+  .about-image {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .about-text {
+    flex: 1;
+  }
+  
+  .about-text h2 {
+    font-size: 28px;
+    color: #000;
+    margin-bottom: 16px;
+    font-weight: 800;
+
+  }
+  
+  .about-text h2 span {
+    color: #e4007c;
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 32px;
+  }
+  
+  .highlight {
+    color: #e4007c;
+  }
+  .container-abtus {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+
+  }
+  /*------------------------------------------------------*/
+  .core-values-section {
+    background-color: #fcecff;
+    width: 100%;
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .core-values-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+  
+  .core-values-text {
+    flex: 1 1 500px;
+    min-width: 300px;
+  }
+  
+  .core-values-text h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 20px;
+  }
+  
+  .core-values-text ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .core-values-text li {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  
+  .core-values-images {
+    flex: 1 1 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
+  .circle-img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .circle-img:hover {
+    transform: scale(1.05);
+  }
+    /* Shared styles */
+.circle-img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Section 2 - Mission */
+  .mission-section {
+    background-color: #ffffff;
+    padding: 60px 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .mission-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  
+  .mission-image {
+    flex: 1 1 250px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .mission-content {
+    flex: 2 1 500px;
+  }
+  
+  .mission-content h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  
+  .mission-content p {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  
+  /* Section 3 - Vision */
+  .vision-section {
+    background-color: #fcecff;
+    padding: 60px 20px;
+    border-radius: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .vision-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+  
+  .vision-text {
+    flex: 2 1 500px;
+  }
+  
+  .vision-text h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  
+  .vision-text p {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  
+  .vision-image {
+    flex: 1 1 250px;
+    display: flex;
+    justify-content: center;
+  }
+  

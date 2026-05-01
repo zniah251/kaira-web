@@ -1,0 +1,100 @@
+body {
+            font-family: 'Times New Roman', serif;
+            /* Thêm fallback font */
+        }
+        /* Custom CSS cho modal căn phải và chiều rộng cố định */
+ 
+        /* Chỉnh màu nền cho các nút phân trang */
+        .pagination .page-item.active .page-link {
+            background-color: #6366F1;
+            /* Màu hơi tối hơn cho trạng thái active */
+            border-color: #6366F1;
+            /* Đồng bộ màu viền */
+            color: white;
+            /* Giữ màu chữ trắng */
+        }
+
+        .pagination .page-item .page-link {
+            color: white;
+            /* Màu chữ trắng để dễ nhìn trên nền tối */
+        }
+.custom-left-modal {
+    margin: 0; /* Loại bỏ margin mặc định */
+    /* Chiều rộng của modal, điều chỉnh theo ý muốn */
+    width: 400px; /* Ví dụ: Chiều rộng khoảng 400px, bạn có thể điều chỉnh */
+    max-width: 100%; /* Đảm bảo không tràn màn hình */
+    height: 100vh; /* Chiều cao full màn hình */
+    display: flex; /* Dùng flexbox để căn chỉnh nội dung */
+    align-items: stretch; /* Kéo dài nội dung theo chiều cao */
+    pointer-events: none; /* Cho phép sự kiện click xuyên qua modal-dialog */
+}
+
+.custom-left-modal .modal-content {
+    height: 100%; /* Kéo dài nội dung modal theo chiều cao của dialog */
+    border-radius: 0; /* Bỏ bo tròn góc để thành hình chữ nhật */
+    border: none; /* Bỏ viền nếu muốn */
+    pointer-events: auto; /* Cho phép sự kiện click trên nội dung modal */
+    overflow-y: auto; /* Cho phép scroll nếu nội dung dài */
+}
+
+/* Đảm bảo phần overlay (backdrop) hiển thị đúng */
+.modal.fade:not(.show) .modal-dialog-end {
+    transform: translateX(100%); /* Để nó trượt từ bên phải vào */
+}
+
+.modal.show .modal-dialog-end {
+    transform: none; /* Khi show thì về vị trí ban đầu */
+}
+
+
+/* Media queries cho responsive */
+@media (max-width: 767.98px) { /* Dưới md breakpoint của Bootstrap */
+    .custom-left-modal {
+        width: 100%; /* Full width trên mobile */
+        height: 100vh;
+    }
+}
+
+/* Common styles for both modals */
+.category-modal .modal-dialog {
+    margin: 1.75rem auto;
+}
+
+.category-modal .modal-content {
+    background-color: #A59AC0 !important;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.category-modal .modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-modal .modal-header .btn-close {
+    color: white;
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.category-modal .form-control, 
+.category-modal .form-select {
+    background-color: #DCD7D5 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #000 !important;
+}
+
+
+.category-modal .form-label {
+    color: white;
+}
+
+
+/* Custom button styles */
+.category-modal .btn-primary,
+.category-modal .btn-info {
+    background-color: #6366F1;
+    border-color: #6366F1;
+    color: white;
+}
+
+

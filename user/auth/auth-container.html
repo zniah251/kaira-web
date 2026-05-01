@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Container</title>
+    <link rel="stylesheet" href="../../../admin/template/assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../../admin/template/assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="../../../admin/template/assets/css/style.css">
+    <style>
+        body {
+            background-color: #eaf6ff;
+            color: #333333;
+            font-family: Arial, sans-serif;
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-container h4 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .auth-container p {
+            margin-bottom: 20px;
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        .auth-container .form-label {
+            font-weight: bold;
+            color: #333333;
+        }
+
+        .auth-container .btn {
+            margin-top: 20px;
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+
+        .auth-container .btn:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .auth-container .text-center a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .auth-container .text-center a:hover {
+            text-decoration: underline;
+        }
+
+        .input-group-text {
+            background-color: #f0f0f0;
+            color: #333333;
+        }
+
+        .form-control {
+            background-color: #ffffff;
+            color: #333333;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            background-color: #ffffff;
+            color: #333333;
+            border-color: #007bff;
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="auth-container">
+        <!-- Login Form -->
+        <div id="login-form" class="auth-container">
+            <form>
+                <h4>Login</h4>
+                <input type="text" placeholder="Username" class="form-control">
+                <input type="password" placeholder="Password" class="form-control">
+                <button class="btn">Login</button>
+                <div class="text-center">
+                    <a href="#" onclick="showRegisterForm()">Don't have an account? Register</a><br>
+                    <a href="#" onclick="showForgotPasswordForm()">Forgot Password?</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="auth-container" style="display: none;">
+            <form>
+                <h4>Register</h4>
+                <input type="text" placeholder="Username" class="form-control">
+                <input type="email" placeholder="Email" class="form-control">
+                <input type="password" placeholder="Password" class="form-control">
+                <button class="btn">Register</button>
+                <div class="text-center">
+                    <a href="#" onclick="showLoginForm()">Already have an account? Login</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div id="forgot-password-form" class="auth-container" style="display: none;">
+            <form>
+                <h4>Forgot Password</h4>
+                <input type="email" placeholder="Email" class="form-control">
+                <button class="btn">Reset Password</button>
+                <div class="text-center">
+                    <a href="#" onclick="showLoginForm()">Back to Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showLoginForm() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('forgot-password-form').style.display = 'none';
+        }
+
+        function showRegisterForm() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+            document.getElementById('forgot-password-form').style.display = 'none';
+        }
+
+        function showForgotPasswordForm() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('forgot-password-form').style.display = 'block';
+        }
+
+        // Hiển thị form Login mặc định
+        showLoginForm();
+    </script>
+</body>
+
+</html>

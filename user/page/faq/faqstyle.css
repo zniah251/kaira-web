@@ -1,0 +1,83 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #111;
+  }
+  
+  .breadcrumb {
+    padding: 40px 40px;
+    margin-left: 40px;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #444;
+  }
+  .breadcrumb-separator {
+    margin: 0 8px; /* khoảng cách ngang trái/phải */
+  }
+  
+  
+  .breadcrumb a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .faq-header {
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  .faq-header h1 {
+    font-size: 64px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .faq-header p {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .faq-container {
+    background: white;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  .faq-container h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .faq-item {
+    margin-bottom: 30px;
+  }
+  
+  .faq-item h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .faq-item h4 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .faq-item p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+  }
+  
