@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2025 at 09:55 AM
+-- Generation Time: May 01, 2026 at 07:09 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -19,6 +19,13 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `e-web`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `blog`
+--
 
 CREATE TABLE `blog` (
   `bid` int(11) NOT NULL,
@@ -28,6 +35,11 @@ CREATE TABLE `blog` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cart`
+--
 
 CREATE TABLE `cart` (
   `caid` int(11) NOT NULL,
@@ -39,20 +51,23 @@ CREATE TABLE `cart` (
   `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `category`
+--
 
 CREATE TABLE `category` (
   `cid` int(11) NOT NULL,
   `cname` varchar(50) NOT NULL,
+  `cslug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cfile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `parentid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-ALTER TABLE category
-ADD COLUMN cslug VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci AFTER cname;
-
-ALTER TABLE category
-ADD COLUMN cfile VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci AFTER cslug;
-
+--
+-- Dumping data for table `category`
+--
 
 INSERT INTO `category` (`cid`, `cname`, `cslug`, `cfile`, `parentid`) VALUES
 (1, 'HOME', NULL, NULL, NULL),
@@ -76,6 +91,11 @@ INSERT INTO `category` (`cid`, `cname`, `cslug`, `cfile`, `parentid`) VALUES
 (19, 'RECRUITMENT', NULL, NULL, 5),
 (20, 'CONTACT', NULL, NULL, 5);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `galery`
+--
 
 CREATE TABLE `galery` (
   `gid` int(11) NOT NULL,
@@ -85,6 +105,11 @@ CREATE TABLE `galery` (
   `title` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `message`
+--
 
 CREATE TABLE `message` (
   `mid` int(11) NOT NULL,
@@ -95,6 +120,11 @@ CREATE TABLE `message` (
   `role` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orders`
+--
 
 CREATE TABLE `orders` (
   `oid` int(11) NOT NULL,
@@ -104,11 +134,24 @@ CREATE TABLE `orders` (
   `vid` int(11) DEFAULT NULL,
   `destatus` enum('Pending','Confirmed','Shipping','Cancelled','Return') NOT NULL DEFAULT 'Pending',
   `paymethod` enum('COD','MOMO','Bank','Smartbanking','Credit Card') DEFAULT NULL,
-  `paystatus` enum('Pending','Paid', 'Awaiting refund', 'Refunded') NOT NULL DEFAULT 'Pending',
+  `paystatus` enum('Pending','Paid','Awaiting refund','Refunded') NOT NULL DEFAULT 'Pending',
   `paytime` timestamp NOT NULL DEFAULT current_timestamp(),
   `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`oid`, `uid`, `totalfinal`, `price`, `vid`, `destatus`, `paymethod`, `paystatus`, `paytime`, `create_at`) VALUES
+(12, 1, 428000.00, 398000.00, NULL, 'Pending', 'COD', 'Pending', '2026-05-01 09:02:16', '2026-05-01 09:02:16'),
+(13, 1, 280000.00, 250000.00, NULL, 'Pending', 'MOMO', 'Pending', '2026-05-01 09:02:49', '2026-05-01 09:02:49');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_detail`
+--
 
 CREATE TABLE `order_detail` (
   `did` int(11) NOT NULL,
@@ -120,6 +163,19 @@ CREATE TABLE `order_detail` (
   `price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `order_detail`
+--
+
+INSERT INTO `order_detail` (`did`, `oid`, `pid`, `quantity`, `size`, `color`, `price`) VALUES
+(4, 12, 147, 2, 'S', 'Đen', 199000.00),
+(5, 13, 20, 1, 'M', 'Xanh dương', 250000.00);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product`
+--
 
 CREATE TABLE `product` (
   `pid` int(11) NOT NULL,
@@ -141,275 +197,9 @@ CREATE TABLE `product` (
   `color2` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-DELIMITER $$
-CREATE TRIGGER `before_insert_order_rating` BEFORE INSERT ON `product` FOR EACH ROW BEGIN
-    IF NEW.rating < 1 OR NEW.rating > 5 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Rating must be between 1 and 5';
-    END IF;
-END
-$$
-DELIMITER ;
-
-
-CREATE TABLE `resetpass` (
-  `reserid` int(11) NOT NULL,
-  `uid` int(11) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `resettime` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `code` int(11) NOT NULL UNIQUE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-CREATE TABLE `review` (
-  `reid` int(11) NOT NULL,
-  `pid` int(11) NOT NULL,
-  `uid` int(11) NOT NULL,
-  `rating` int(11) NOT NULL,
-  `content` longtext NOT NULL,
-  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `picture` varchar(255) NOT NULL,
-  `subpic1` varchar(255) NOT NULL,
-  `reid_parent` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-CREATE TABLE `role` (
-  `rid` int(11) NOT NULL,
-  `rname` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-
-INSERT INTO `role` (`rid`, `rname`) VALUES
-(1, '[admin]'),
-(2, '[user]');
-
-
-CREATE TABLE `users` (
-  `uid` int(11) NOT NULL,
-  `uname` varchar(50) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `phonenumber` varchar(20) NOT NULL,
-  `address` varchar(200) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `rid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-CREATE TABLE `voucher` (
-  `vid` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `discount` decimal(10,2) NOT NULL,
-  `minprice` decimal(10,2) NOT NULL,
-  `expiry` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-INSERT INTO `voucher`(`vid`, `name`, `discount`, `minprice`, `expiry`) VALUES ('1','Free Shipping', '30.00', '300000.00', '2025-12-31');
-INSERT INTO `voucher`(`vid`, `name`, `discount`, `minprice`, `expiry`) VALUES ('2','Discount', '50.00', '300000.00', '2025-12-31');
-
-CREATE TABLE `user_voucher` (
-  `uvid` int(11) NOT NULL,
-  `uid` int(11) NOT NULL,
-  `vid` int(11) NOT NULL,
-  `getting_at` date NOT NULL DEFAULT current_timestamp(),
-  `status` enum('unused','used','expired') NOT NULL DEFAULT 'unused'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-
-CREATE TABLE `wishlist` (
-  `wid` int(11) NOT NULL,
-  `uid` int(11) NOT NULL,
-  `pid` int(11) NOT NULL,
-  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-ALTER TABLE `blog`
-  ADD PRIMARY KEY (`bid`);
-
-
-ALTER TABLE `cart`
-  ADD PRIMARY KEY (`caid`),
-  ADD KEY `p_FK` (`pid`),
-  ADD KEY `u_FK` (`uid`);
-
-
-ALTER TABLE `category`
-  ADD PRIMARY KEY (`cid`),
-  ADD KEY `parentid_FK` (`parentid`);
-
-
-ALTER TABLE `galery`
-  ADD PRIMARY KEY (`gid`),
-  ADD KEY `pid_FK` (`pid`);
-
-
-ALTER TABLE `message`
-  ADD PRIMARY KEY (`mid`),
-  ADD KEY `uidFK` (`uid`),
-  ADD KEY `roleFK` (`role`);
-
-
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`oid`),
-  ADD KEY `usFK` (`uid`),
-  ADD KEY `voucherFK` (`vid`);
-
-
-ALTER TABLE `order_detail`
-  ADD PRIMARY KEY (`did`),
-  ADD KEY `oidFK` (`oid`),
-  ADD KEY `prFK` (`pid`);
-
-
-ALTER TABLE `product`
-  ADD PRIMARY KEY (`pid`),
-  ADD KEY `cid_FK` (`cid`);
-
-
-ALTER TABLE `resetpass`
-  ADD PRIMARY KEY (`reserid`),
-  ADD KEY `useridFK` (`uid`),
-  ADD KEY `emailFK` (`email`);
-
-
-ALTER TABLE `review`
-  ADD PRIMARY KEY (`reid`),
-  ADD KEY `proFK` (`pid`),
-  ADD KEY `userFK` (`uid`),
-  ADD KEY `reid_parent` (`reid_parent`);
-
-
-ALTER TABLE `role`
-  ADD PRIMARY KEY (`rid`);
-
-
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`uid`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `rid_fk` (`rid`);
-
-
-ALTER TABLE `voucher`
-  ADD PRIMARY KEY (`vid`);
-
-
-ALTER TABLE `wishlist`
-  ADD PRIMARY KEY (`wid`),
-  ADD KEY `pFK` (`pid`);
-
-ALTER TABLE `blog`
-  MODIFY `bid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `cart`
-  MODIFY `caid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `category`
-  MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
-
-ALTER TABLE `galery`
-  MODIFY `gid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `message`
-  MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `orders`
-  MODIFY `oid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `order_detail`
-  MODIFY `did` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `product`
-  MODIFY `pid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `resetpass`
-  MODIFY `reserid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `review`
-  MODIFY `reid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `role`
-  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
-
-ALTER TABLE `users`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `voucher`
-  MODIFY `vid` int(11) NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE `wishlist`
-  MODIFY `wid` int(11) NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `cart`
-  ADD CONSTRAINT `p_FK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`),
-  ADD CONSTRAINT `u_FK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
-
-
-ALTER TABLE `category`
-  ADD CONSTRAINT `parentid_FK` FOREIGN KEY (`parentid`) REFERENCES `category` (`cid`);
-
-
-ALTER TABLE `galery`
-  ADD CONSTRAINT `pid_FK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`);
-
-
-ALTER TABLE `message`
-  ADD CONSTRAINT `roleFK` FOREIGN KEY (`role`) REFERENCES `users` (`rid`),
-  ADD CONSTRAINT `uidFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
-
-
-ALTER TABLE `orders`
-  ADD CONSTRAINT `usFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`),
-  ADD CONSTRAINT `voucherFK` FOREIGN KEY (`vid`) REFERENCES `voucher` (`vid`);
-
-
-ALTER TABLE `order_detail`
-  ADD CONSTRAINT `oidFK` FOREIGN KEY (`oid`) REFERENCES `orders` (`oid`),
-  ADD CONSTRAINT `prFK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`);
-
-
-ALTER TABLE `product`
-  ADD CONSTRAINT `cid_FK` FOREIGN KEY (`cid`) REFERENCES `category` (`cid`);
-
-
-ALTER TABLE `resetpass`
-  ADD CONSTRAINT `emailFK` FOREIGN KEY (`email`) REFERENCES `users` (`email`),
-  ADD CONSTRAINT `useridFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
-
-
-ALTER TABLE `review`
-  ADD CONSTRAINT `proFK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`),
-  ADD CONSTRAINT `reid_parent` FOREIGN KEY (`reid_parent`) REFERENCES `review` (`reid`),
-  ADD CONSTRAINT `userFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
-
-
-ALTER TABLE `users`
-  ADD CONSTRAINT `rid_fk` FOREIGN KEY (`rid`) REFERENCES `role` (`rid`);
-
-
-ALTER TABLE `wishlist`
-  ADD CONSTRAINT `pFK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
+--
+-- Dumping data for table `product`
+--
 
 INSERT INTO `product` (`pid`, `cid`, `title`, `price`, `discount`, `thumbnail`, `thumbnail2`, `thumbnail3`, `description`, `stock`, `size`, `size2`, `size3`, `rating`, `sold`, `color`, `color2`) VALUES
 (1, 11, 'Áo polo cổ bé tay ngắn in hoạ tiết chữ hiện đại', 199000.00, 159000.00, 'ao-polo-co-be-tay-ngan-in-hoa-tiet-chU-hien-ai.webp', 'ao-polo-co-be-tay-ngan-in-hoa-tiet-chU-hien-ai-2.webp', 'ao-polo-co-be-tay-ngan-in-hoa-tiet-chU-hien-ai-3.webp', 'Chiếc áo polo cổ bé tay ngắn với họa tiết chữ cá tính, mang đến vẻ ngoài hiện đại, trẻ trung và dễ dàng phối đồ cho mọi dịp.', 10, 'M', 'L', 'XL', 5, 0, 'Đen', NULL),
@@ -421,7 +211,7 @@ INSERT INTO `product` (`pid`, `cid`, `title`, `price`, `discount`, `thumbnail`, 
 (7, 11, 'Áo polo nam thời trang basic dễ phối đồ', 149000.00, 129000.00, 'ao-polo-nam-thoi-trang-basic-de-phoi-o.jpg', 'ao-polo-nam-thoi-trang-basic-de-phoi-o-2.jpg', 'ao-polo-nam-thoi-trang-basic-de-phoi-o-3.jpg', 'Thiết kế đơn giản nhưng tinh tế, dễ dàng phối hợp với nhiều phong cách thường ngày.', 15, 'M', 'L', 'XL', 4.5, 0, 'Nâu', NULL),
 (8, 11, 'Áo polo nam trơn vải cotton polyester', 299000.00, 269000.00, 'ao-polo-nam-tron-vai-cotton-polyester.webp', 'ao-polo-nam-tron-vai-cotton-polyester-2.webp', 'ao-polo-nam-tron-vai-cotton-polyester-3.webp', 'Chất vải cotton polyester mềm mại, thấm hút tốt, kiểu dáng trơn hiện đại phù hợp cho mọi hoạt động.', 30, 'M', 'L', 'XL', 4.6, 0, 'Trắng', NULL),
 (9, 11, 'Áo thun ngắn tay nam', 189000.00, 159000.00, 'ao-Thun-Ngan-Tay-Nam.webp', 'ao-Thun-Ngan-Tay-Nam-2.webp', 'ao-Thun-Ngan-Tay-Nam-3.webp', 'Áo thun nam tay ngắn thoáng mát, năng động, phù hợp mặc hằng ngày hay khi tập luyện.', 10, 'M', 'L', 'XL', 4.5, 0, 'Xanh', NULL),
-(10, 12, 'Áo sơ mi Linen nam tay ngắn xanh', 299000.00, 259000.00, 'ao-Thun-Ngan-Tay-Nam.webp', 'ao-Thun-Ngan-Tay-Nam-2.webp','ao-Thun-Ngan-Tay-Nam-3.webp' , 'Chất liệu linen cao cấp, nhẹ và thoáng, mang đến cảm giác thoải mái trong ngày hè.', 10, 'M', 'L', 'XL', 4.5, 0, 'Đen', NULL),
+(10, 12, 'Áo sơ mi Linen nam tay ngắn xanh', 299000.00, 259000.00, 'ao-Thun-Ngan-Tay-Nam.webp', 'ao-Thun-Ngan-Tay-Nam-2.webp', 'ao-Thun-Ngan-Tay-Nam-3.webp', 'Chất liệu linen cao cấp, nhẹ và thoáng, mang đến cảm giác thoải mái trong ngày hè.', 10, 'M', 'L', 'XL', 4.5, 0, 'Đen', NULL),
 (11, 12, 'Áo Sơ Mi Cuban Nam Họa Tiết Marvel Comic', 150000.00, 120000.00, 'ao-So-Mi-Cuban-Nam-Hoa-Tiet-Marvel-Comic.webp', 'ao-So-Mi-Cuban-Nam-Hoa-Tiet-Marvel-Comic-2.webp', 'ao-So-Mi-Cuban-Nam-Hoa-Tiet-Marvel-Comic-3.webp', 'Thiết kế Cuban độc đáo kết hợp họa tiết Marvel đầy cá tính, tạo điểm nhấn nổi bật cho outfit.', 10, 'M', 'L', 'XL', 5, 0, 'Trắng đen', NULL),
 (12, 12, 'Áo Sơ Mi Cuban Nam Tay', 210000.00, 180000.00, 'ao-So-Mi-Cuban-Nam-Tay.webp', 'ao-So-Mi-Cuban-Nam-Tay-2.webp', 'ao-So-Mi-Cuban-Nam-Tay-3.webp', 'Form Cuban cổ điển pha chút phóng khoáng, lý tưởng cho những buổi đi chơi hay dạo phố.', 10, 'M', 'L', 'XL', 5, 0, 'Trắng', NULL),
 (13, 12, 'Áo sơ mi dài tay nam kẻ caro cotton màu xanh da trời', 195000.00, 165000.00, 'ao-so-mi-dai-tay-nam-ke-caro-cotton-mau-xanh-da-troi.jpg', 'ao-so-mi-dai-tay-nam-ke-caro-cotton-mau-xanh-da-troi-2.jpg', 'ao-so-mi-dai-tay-nam-ke-caro-cotton-mau-xanh-da-troi-3.jpg', 'Sản phẩm thời trang nam cao cấp.', 10, 'M', 'L', 'XL', 5, 0, 'Xanh da trời', NULL),
@@ -431,7 +221,7 @@ INSERT INTO `product` (`pid`, `cid`, `title`, `price`, `discount`, `thumbnail`, 
 (17, 12, 'Áo sơ mi dài tay nam tím than', 290000.00, 250000.00, 'ao-so-mi-dai-tay-nam-tim-than.jpg', 'ao-so-mi-dai-tay-nam-tim-than-2.jpg', 'ao-so-mi-dai-tay-nam-tim-than-3.jpg', 'Sản phẩm thời trang nam cao cấp.', 10, 'M', 'L', 'XL', 5, 0, 'Tím than', NULL),
 (18, 12, 'Áo Sơ Mi Linen Nam Tay Ngắn Xanh', 190000.00, 150000.00, 'ao-So-Mi-Linen-Nam-Tay-Ngan-Xanh.jpg', 'ao-So-Mi-Linen-Nam-Tay-Ngan-Xanh-2.jpg', 'ao-So-Mi-Linen-Nam-Tay-Ngan-Xanh-3.jpg', 'Sản phẩm thời trang nam cao cấp.', 10, 'M', 'L', 'XL', 5, 0, 'Xanh rêu', NULL),
 (19, 9, 'Quần short thể thao nam phối viền polyester', 200000.00, 170000.00, 'Quan-short-the-thao-nam-phoi-vien-polyester.webp', 'Quan-short-the-thao-nam-phoi-vien-polyester-2.webp', 'Quan-short-the-thao-nam-phoi-vien-polyester-3.webp', 'Sản phẩm quần short nam thoải mái, năng động.', 10, 'M', 'L', 'XL', 5, 0, 'Xám', NULL),
-(20, 9, 'Quần short denim nam form straight', 250000.00, 220000.00, 'Quan-short-denim-nam-form-straight.webp', 'Quan-short-denim-nam-form-straight-2.webp', 'Quan-short-denim-nam-form-straight-3.webp', 'Chất liệu denim bền đẹp, kiểu dáng trẻ trung.', 10, 'M', 'L', 'XL', 5, 0, 'Xanh dương', NULL),
+(20, 9, 'Quần short denim nam form straight', 250000.00, 220000.00, 'Quan-short-denim-nam-form-straight.webp', 'Quan-short-denim-nam-form-straight-2.webp', 'Quan-short-denim-nam-form-straight-3.webp', 'Chất liệu denim bền đẹp, kiểu dáng trẻ trung.', 9, 'M', 'L', 'XL', 5, 1, 'Xanh dương', NULL),
 (21, 9, 'Quần short nam nỉ gân French Terry form relax', 180000.00, 150000.00, 'Quan-short-nam-ni-gan-french-terry-form-relax.webp', 'Quan-short-nam-ni-gan-french-terry-form-relax-2.webp', 'Quan-short-nam-ni-gan-french-terry-form-relax-3.webp', 'Chất liệu nỉ cao cấp, thoáng mát, phù hợp tập luyện.', 10, 'M', 'L', 'XL', 5, 0, 'Đen', NULL),
 (22, 9, 'Quần short nam nylon form relax', 160000.00, 135000.00, 'Quan-short-nam-nylon-form-relax.webp', 'Quan-short-nam-nylon-form-relax-2.webp', 'Quan-short-nam-nylon-form-relax-3.webp', 'Kiểu dáng cơ bản, dễ phối đồ, chất liệu nhẹ.', 10, 'M', 'L', 'XL', 5, 0, 'Kem', NULL),
 (23, 9, 'Quần short nam trơn cotton form straight', 230000.00, 195000.00, 'Quan-short-nam-tron-cotton-form-straight.webp', 'Quan-short-nam-tron-cotton-form-straight-2.webp', 'Quan-short-nam-tron-cotton-form-straight-3.webp', 'Chất liệu cotton thấm hút, thiết kế đơn giản.', 10, 'M', 'L', 'XL', 5, 0, 'Trắng', NULL),
@@ -486,28 +276,452 @@ INSERT INTO `product` (`pid`, `cid`, `title`, `price`, `discount`, `thumbnail`, 
 (141, 16, 'Hansy Mini Skirt', 199000.00, 169000.00, 'Hansy-Mini-Skirt.jpg', 'Hansy-Mini-Skirt2.jpg', 'Hansy-Mini-Skirt3.jpg', 'Hansy Mini Skirt thiết kế dáng ngắn ôm nhẹ, tôn dáng hiệu quả và giúp đôi chân thêm dài. Gam màu kem trung tính dễ phối đồ, phù hợp cả khi đi học, đi chơi hay dạo phố. Chất vải dày vừa phải, mềm mịn, giữ form tốt. Item lý tưởng cho nàng yêu thích phong cách basic nhưng vẫn muốn thật nổi bật.', 10, 'S', 'M', NULL, 5, 0, 'Be', NULL),
 (143, 16, 'Hiba Skirt', 150000.00, 120000.00, 'Hiba-Skirt.jpg', 'Hiba-Skirt2.jpg', 'Hiba-Skirt3.jpg', 'Chiếc chân váy Hiba với thiết kế họa tiết sọc ngang đỏ trắng năng động, cùng chi tiết dây rút cá tính ở cạp, mang lại vẻ ngoài trẻ trung và thoải mái, lý tưởng cho mọi hoạt động thường ngày.', 10, 'S', 'M', 'L', 5, 0, 'Caro đỏ', NULL),
 (145, 16, 'Nixie Pleated Skirt', 250000.00, 220000.00, 'Nixie-Pleated-Skirt.jpg', 'Nixie-Pleated-Skirt2.jpg', 'Nixie-Pleated-Skirt3.jpg', 'Nixie Pleated Skirt sở hữu thiết kế xòe nhẹ cùng nếp gấp mềm mại, tạo cảm giác bồng bềnh nữ tính. Tông màu kem ngọt ngào phối dây rút đen nổi bật, mang lại vẻ năng động mà vẫn thanh lịch. Kiểu dáng giả quần giúp nàng thoải mái vận động, phù hợp cho các buổi dạo phố, chụp ảnh hay đi chơi cuối tuần.', 10, 'S', 'M', 'L', 5, 0, 'Be', NULL),
-(147, 16, 'Rolly Bubble Skirt', 199000.00, 169000.00, 'Rolly-Bubble-Skirt.jpg', 'Rolly-Bubble-Skirt2.jpg', 'Rolly-Bubble-Skirt3.jpg', 'Với thiết kế dáng phồng độc đáo cùng gam màu đen basic, Rolly Bubble Skirt là item must-have cho nàng yêu phong cách thời trang hiện đại. Phần cạp co giãn kèm dây rút giúp ôm vừa eo, tạo form chuẩn mà vẫn thoải mái. Dễ mix cùng áo thun, croptop hay hoodie để tạo nên outfit cá tính và năng động mỗi ngày.', 10, 'S', 'M', 'L', 5, 0, 'Đen', NULL),
+(147, 16, 'Rolly Bubble Skirt', 199000.00, 169000.00, 'Rolly-Bubble-Skirt.jpg', 'Rolly-Bubble-Skirt2.jpg', 'Rolly-Bubble-Skirt3.jpg', 'Với thiết kế dáng phồng độc đáo cùng gam màu đen basic, Rolly Bubble Skirt là item must-have cho nàng yêu phong cách thời trang hiện đại. Phần cạp co giãn kèm dây rút giúp ôm vừa eo, tạo form chuẩn mà vẫn thoải mái. Dễ mix cùng áo thun, croptop hay hoodie để tạo nên outfit cá tính và năng động mỗi ngày.', 8, 'S', 'M', 'L', 5, 2, 'Đen', NULL),
 (149, 16, 'Tacha Bubble Skirt', 150000.00, 120000.00, 'Tacha-Bubble-Skirt.jpg', 'Tacha-Bubble-Skirt2.jpg', 'Tacha-Bubble-Skirt3.jpg', 'Mang phong cách trẻ trung với thiết kế dáng phồng độc đáo, chân váy Bubble Tacha kẻ caro giúp bạn nổi bật trong mọi khung hình. Form ngắn, tạo hiệu ứng chân dài, cực hợp với áo croptop hoặc sơ mi basic. Chất vải mềm mại, dễ phối đồ – lựa chọn lý tưởng cho các buổi đi chơi, chụp hình hay hẹn hò cuối tuần.\r\n\r\n', 10, 'S', 'M', NULL, 5, 0, 'Caro', NULL);
 
-ALTER TABLE users
-ADD COLUMN google_id VARCHAR(255) UNIQUE NULL AFTER password;
-ALTER TABLE users
-ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP AFTER google_id;
-ALTER TABLE users
-ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at;
-ALTER TABLE users
-ADD COLUMN email_verified TINYINT(1) DEFAULT 0 AFTER updated_at;
+--
+-- Triggers `product`
+--
+DELIMITER $$
+CREATE TRIGGER `before_insert_order_rating` BEFORE INSERT ON `product` FOR EACH ROW BEGIN
+    IF NEW.rating < 1 OR NEW.rating > 5 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Rating must be between 1 and 5';
+    END IF;
+END
+$$
+DELIMITER ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `resetpass`
+--
+
+CREATE TABLE `resetpass` (
+  `reserid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `resettime` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `code` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `review`
+--
+
+CREATE TABLE `review` (
+  `reid` int(11) NOT NULL,
+  `pid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `rating` int(11) NOT NULL,
+  `content` longtext NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `picture` varchar(255) NOT NULL,
+  `subpic1` varchar(255) NOT NULL,
+  `reid_parent` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `role`
+--
+
+CREATE TABLE `role` (
+  `rid` int(11) NOT NULL,
+  `rname` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `role`
+--
+
+INSERT INTO `role` (`rid`, `rname`) VALUES
+(1, '[admin]'),
+(2, '[user]');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `uid` int(11) NOT NULL,
+  `uname` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `phonenumber` varchar(20) NOT NULL,
+  `address` varchar(200) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `google_id` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `email_verified` tinyint(1) DEFAULT 0,
+  `rid` int(11) NOT NULL,
+  `balance` int(11) DEFAULT 1000000
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`uid`, `uname`, `email`, `phonenumber`, `address`, `password`, `google_id`, `created_at`, `updated_at`, `email_verified`, `rid`, `balance`) VALUES
+(1, 'test', '23520040@gm.uit.edu.vn', '0816810784', 's', '$2y$10$8DNlzLhnq354BvOur/cD/.zsoRmDI3niEYxp3fpM6yWJ67gG9lvxm', NULL, '2026-05-01 14:55:10', '2026-05-01 15:52:40', 0, 2, 1000000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_voucher`
+--
+
+CREATE TABLE `user_voucher` (
+  `uvid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `vid` int(11) NOT NULL,
+  `getting_at` date NOT NULL DEFAULT current_timestamp(),
+  `status` enum('unused','used','expired') NOT NULL DEFAULT 'unused'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_voucher`
+--
+
+INSERT INTO `user_voucher` (`uvid`, `uid`, `vid`, `getting_at`, `status`) VALUES
+(3, 1, 2, '2026-05-01', 'unused');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `voucher`
+--
+
+CREATE TABLE `voucher` (
+  `vid` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `discount` decimal(10,2) NOT NULL,
+  `minprice` decimal(10,2) NOT NULL,
+  `expiry` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `voucher`
+--
+
+INSERT INTO `voucher` (`vid`, `name`, `discount`, `minprice`, `expiry`) VALUES
+(1, 'Free Shipping', 30.00, 300000.00, '2025-12-31'),
+(2, 'Discount', 50.00, 300000.00, '2025-12-31');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wishlist`
+--
+
+CREATE TABLE `wishlist` (
+  `wid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `pid` int(11) NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `blog`
+--
+ALTER TABLE `blog`
+  ADD PRIMARY KEY (`bid`);
+
+--
+-- Indexes for table `cart`
+--
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`caid`),
+  ADD KEY `p_FK` (`pid`),
+  ADD KEY `u_FK` (`uid`);
+
+--
+-- Indexes for table `category`
+--
+ALTER TABLE `category`
+  ADD PRIMARY KEY (`cid`),
+  ADD KEY `parentid_FK` (`parentid`);
+
+--
+-- Indexes for table `galery`
+--
+ALTER TABLE `galery`
+  ADD PRIMARY KEY (`gid`),
+  ADD KEY `pid_FK` (`pid`);
+
+--
+-- Indexes for table `message`
+--
+ALTER TABLE `message`
+  ADD PRIMARY KEY (`mid`),
+  ADD KEY `uidFK` (`uid`),
+  ADD KEY `roleFK` (`role`);
+
+--
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`oid`),
+  ADD KEY `usFK` (`uid`),
+  ADD KEY `voucherFK` (`vid`);
+
+--
+-- Indexes for table `order_detail`
+--
+ALTER TABLE `order_detail`
+  ADD PRIMARY KEY (`did`),
+  ADD KEY `oidFK` (`oid`),
+  ADD KEY `prFK` (`pid`);
+
+--
+-- Indexes for table `product`
+--
+ALTER TABLE `product`
+  ADD PRIMARY KEY (`pid`),
+  ADD KEY `cid_FK` (`cid`);
+
+--
+-- Indexes for table `resetpass`
+--
+ALTER TABLE `resetpass`
+  ADD PRIMARY KEY (`reserid`),
+  ADD UNIQUE KEY `code` (`code`),
+  ADD KEY `useridFK` (`uid`),
+  ADD KEY `emailFK` (`email`);
+
+--
+-- Indexes for table `review`
+--
+ALTER TABLE `review`
+  ADD PRIMARY KEY (`reid`),
+  ADD KEY `proFK` (`pid`),
+  ADD KEY `userFK` (`uid`),
+  ADD KEY `reid_parent` (`reid_parent`);
+
+--
+-- Indexes for table `role`
+--
+ALTER TABLE `role`
+  ADD PRIMARY KEY (`rid`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`uid`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `google_id` (`google_id`),
+  ADD KEY `rid_fk` (`rid`);
+
+--
+-- Indexes for table `user_voucher`
+--
 ALTER TABLE `user_voucher`
   ADD PRIMARY KEY (`uvid`),
   ADD KEY `v_FK` (`vid`),
   ADD KEY `uid_FK` (`uid`);
 
+--
+-- Indexes for table `voucher`
+--
+ALTER TABLE `voucher`
+  ADD PRIMARY KEY (`vid`);
+
+--
+-- Indexes for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  ADD PRIMARY KEY (`wid`),
+  ADD KEY `pFK` (`pid`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `blog`
+--
+ALTER TABLE `blog`
+  MODIFY `bid` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `cart`
+--
+ALTER TABLE `cart`
+  MODIFY `caid` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `category`
+--
+ALTER TABLE `category`
+  MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `galery`
+--
+ALTER TABLE `galery`
+  MODIFY `gid` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `message`
+--
+ALTER TABLE `message`
+  MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `oid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `order_detail`
+--
+ALTER TABLE `order_detail`
+  MODIFY `did` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `product`
+--
+ALTER TABLE `product`
+  MODIFY `pid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=150;
+
+--
+-- AUTO_INCREMENT for table `resetpass`
+--
+ALTER TABLE `resetpass`
+  MODIFY `reserid` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `review`
+--
+ALTER TABLE `review`
+  MODIFY `reid` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `role`
+--
+ALTER TABLE `role`
+  MODIFY `rid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `user_voucher`
+--
+ALTER TABLE `user_voucher`
+  MODIFY `uvid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `voucher`
+--
+ALTER TABLE `voucher`
+  MODIFY `vid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  MODIFY `wid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `cart`
+--
+ALTER TABLE `cart`
+  ADD CONSTRAINT `p_FK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`),
+  ADD CONSTRAINT `u_FK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
+
+--
+-- Constraints for table `category`
+--
+ALTER TABLE `category`
+  ADD CONSTRAINT `parentid_FK` FOREIGN KEY (`parentid`) REFERENCES `category` (`cid`);
+
+--
+-- Constraints for table `galery`
+--
+ALTER TABLE `galery`
+  ADD CONSTRAINT `pid_FK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`);
+
+--
+-- Constraints for table `message`
+--
+ALTER TABLE `message`
+  ADD CONSTRAINT `roleFK` FOREIGN KEY (`role`) REFERENCES `users` (`rid`),
+  ADD CONSTRAINT `uidFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `usFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`),
+  ADD CONSTRAINT `voucherFK` FOREIGN KEY (`vid`) REFERENCES `voucher` (`vid`);
+
+--
+-- Constraints for table `order_detail`
+--
+ALTER TABLE `order_detail`
+  ADD CONSTRAINT `oidFK` FOREIGN KEY (`oid`) REFERENCES `orders` (`oid`),
+  ADD CONSTRAINT `prFK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`);
+
+--
+-- Constraints for table `product`
+--
+ALTER TABLE `product`
+  ADD CONSTRAINT `cid_FK` FOREIGN KEY (`cid`) REFERENCES `category` (`cid`);
+
+--
+-- Constraints for table `resetpass`
+--
+ALTER TABLE `resetpass`
+  ADD CONSTRAINT `emailFK` FOREIGN KEY (`email`) REFERENCES `users` (`email`),
+  ADD CONSTRAINT `useridFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
+
+--
+-- Constraints for table `review`
+--
+ALTER TABLE `review`
+  ADD CONSTRAINT `proFK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`),
+  ADD CONSTRAINT `reid_parent` FOREIGN KEY (`reid_parent`) REFERENCES `review` (`reid`),
+  ADD CONSTRAINT `userFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `rid_fk` FOREIGN KEY (`rid`) REFERENCES `role` (`rid`);
+
+--
+-- Constraints for table `user_voucher`
+--
 ALTER TABLE `user_voucher`
   ADD CONSTRAINT `uid_FK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`),
   ADD CONSTRAINT `v_FK` FOREIGN KEY (`vid`) REFERENCES `voucher` (`vid`);
+
+--
+-- Constraints for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  ADD CONSTRAINT `pFK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`);
 COMMIT;
 
-ALTER TABLE `user_voucher`
-  MODIFY `uvid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
