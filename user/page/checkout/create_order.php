@@ -17,7 +17,7 @@ $phone    = $_POST['phone'] ?? '';
 $method   = $_POST['payment_method'] ?? 'MOMO';
 $voucher  = trim($_POST['voucher'] ?? '');
 
-$vid = 0;
+$vid = null;
 $discount = 0;
 $shipping = 30000;
 $voucher_minprice = 0;
@@ -83,8 +83,8 @@ try {
     $paystatus = ($method === 'WALLET') ? 'Paid' : 'Pending';
     $paymethod_to_save = ($method === 'WALLET') ? 'E-wallet' : $method;
     $stmt = $conn->prepare("INSERT INTO orders (uid, totalfinal, price, destatus, paymethod, paystatus, create_at, vid) VALUES (?, ?, ?, 'Pending', ?, ?, NOW(), ?)");
-    $vid_to_save = $vid ?? 0;
-    $stmt->bind_param("iddssi", $uid, $totalfinal, $total, $paymethod_to_save, $paystatus, $vid_to_save);
+    $vid_to_save = $vid; 
+$stmt->bind_param("iddssi", $uid, $totalfinal, $total, $paymethod_to_save, $paystatus, $vid_to_save);
     $stmt->execute();
 
     $oid = $stmt->insert_id;
@@ -115,11 +115,11 @@ try {
     }
 
     // 9. Nếu có voucher, cập nhật user_voucher.status = 'used'
-    if ($vid_to_save) {
-        $stmt = $conn->prepare("UPDATE user_voucher SET status = 'used' WHERE uid = ? AND vid = ?");
-        $stmt->bind_param("ii", $uid, $vid_to_save);
-        $stmt->execute();
-    }
+   if ($vid !== null) {
+    $stmt = $conn->prepare("UPDATE user_voucher SET status = 'used' WHERE uid = ? AND vid = ?");
+    $stmt->bind_param("ii", $uid, $vid_to_save);
+    $stmt->execute();
+}
 
     // 10. Nếu thanh toán bằng ví điện tử, trừ tiền từ balance
     if ($method === 'WALLET') {
@@ -148,8 +148,8 @@ try {
             header("Location: confirm_shipping.php?orderId=$oid&fullname=$fullname&address=$address&phone=$phone");
     }
     exit();
-
-} catch (Exception $e) {
+    }
+catch (Exception $e) {
     $conn->rollback();
     echo "Error: " . $e->getMessage();
     exit();

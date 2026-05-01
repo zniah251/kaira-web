@@ -70,7 +70,7 @@ INSERT INTO `category` (`cid`, `cname`, `cslug`, `cfile`, `parentid`) VALUES
 (13, 'TOPS', 'top', 'top.php', 8),
 (14, 'DRESSES', 'dresses', 'dresses.php', 8),
 (15, 'PANTS', 'pants', 'pants.php', 8),
-(16, 'SKIRTS', 'skirt', 'skirt.php', 8),
+(16, 'SKIRTS', 'skirts', 'skirts.php', 8),
 (17, 'ABOUT US', NULL, NULL, 5),
 (18, 'MEMBERSHIP', NULL, NULL, 5),
 (19, 'RECRUITMENT', NULL, NULL, 5),

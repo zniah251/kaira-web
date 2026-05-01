@@ -145,9 +145,9 @@ $user_icon_svg = file_get_contents($_SERVER['DOCUMENT_ROOT'] . "/e-web/user/icon
                 <a class="nav-link dropdown-toggle" href="#" id="dropdownCollection" data-bs-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false">Collection</a>
                 <ul class="dropdown-menu list-unstyled" aria-labelledby="dropdownCollection">
-                  <li><a href="/e-web/user/page/collection/summer-collection-2025.php" class="dropdown-item">Collection 1</a></li>
-                  <li><a href="collection2.html" class="dropdown-item">Collection 2</a></li>
-                  <li><a href="collection3.html" class="dropdown-item">Collection 3</a></li>
+                  <li><a href="/e-web/user/page/collection/summer-collection-2025.php" class="dropdown-item">SUMMER COLLECTION 2025</a></li>
+                 <!-- <li><a href="collection2.html" class="dropdown-item">Collection 2</a></li>
+                  <li><a href="collection3.html" class="dropdown-item">Collection 3</a></li>-->
                 </ul>
               </li>
 
@@ -170,7 +170,7 @@ $user_icon_svg = file_get_contents($_SERVER['DOCUMENT_ROOT'] . "/e-web/user/icon
                       <li><a href="/e-web/user/page/woman/tops.php" class="dropdown-item">Tops</a></li>
                       <li><a href="/e-web/user/page/woman/dresses.php" class="dropdown-item">Dresses</a></li>
                       <li><a href="/e-web/user/page/woman/pants.php" class="dropdown-item">Pants</a></li>
-                      <li><a href="/e-web/user/page/woman/skirt.php" class="dropdown-item">Skirts</a></li>
+                      <li><a href="/e-web/user/page/woman/skirts.php" class="dropdown-item">Skirts</a></li>
                     </ul>
                   </li>
                 </ul>

@@ -215,7 +215,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/e-web/connect.php";
 <body>
     <?php include('../../../navbar.php'); ?>
     <div class="flex min-h-screen py-8 px-4 sm:px-6 lg:px-8" style="background-color: #f1f1f0;">
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/e-web/sidebar2.php'; ?>
+       
         <div class="flex-1 bg-white p-6 rounded-lg shadow-md" style="margin: 20px 0;">
             <h3 class="text-2xl font-semibold mb-6 text-gray-800" style="border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 15px;">Quản lý đơn hàng</h3>
             <div class="status-tabs-container">
