@@ -1,20 +1,66 @@
 <?php
-session_start(); // Bắt buộc phải có để truy cập session
+session_start();
+require_once "../../../connect.php";
 
-// Kiểm tra xem giỏ hàng có dữ liệu không
-$cart_items = [];
-if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
-  $cart_items = $_SESSION['cart'];
-}
+// ── Kiểm tra đăng nhập ──────────────────────────────────────────────────────
+$uid = isset($_SESSION['uid']) ? (int)$_SESSION['uid'] : 0;
 
-// Xử lý xóa sản phẩm khỏi giỏ hàng
+// Xử lý xóa sản phẩm (AJAX POST với remove_key)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_key'])) {
-  $removeKey = $_POST['remove_key'];
-  if (isset($_SESSION['cart'][$removeKey])) {
-    unset($_SESSION['cart'][$removeKey]);
-  }
+    $key   = trim($_POST['remove_key']);
+    $parts = explode('_', $key, 3);
+    if ($uid > 0 && count($parts) === 3) {
+        $pid   = (int)$parts[0];
+        $size  = $parts[1] === 'nosize'  ? '' : $parts[1];
+        $color = $parts[2] === 'nocolor' ? '' : $parts[2];
+
+        $stmt = $conn->prepare(
+            "DELETE FROM `cart` WHERE uid = ? AND pid = ? AND size = ? AND color = ?"
+        );
+        if ($stmt) {
+            $stmt->bind_param("iiss", $uid, $pid, $size, $color);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+    // Không redirect, vẫn render trang (AJAX gọi xong tự remove row trên DOM)
 }
 
+// ── Load giỏ hàng từ DB ─────────────────────────────────────────────────────
+$cart_items = [];
+if ($uid > 0) {
+    $stmt = $conn->prepare(
+        "SELECT c.caid, c.pid, c.quantity, c.size, c.color,
+                p.title, p.price, p.thumbnail
+         FROM `cart` c
+         JOIN `product` p ON p.pid = c.pid
+         WHERE c.uid = ?
+         ORDER BY c.create_at DESC"
+    );
+    if ($stmt) {
+        $stmt->bind_param("i", $uid);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        while ($row = $res->fetch_assoc()) {
+            // Tạo key giống format cũ để JS (data-key, updateQuantityOnServer) vẫn hoạt động
+            $sz  = $row['size']  !== '' ? $row['size']  : 'nosize';
+            $clr = $row['color'] !== '' ? $row['color'] : 'nocolor';
+            $key = $row['pid'] . '_' . $sz . '_' . $clr;
+
+            $cart_items[$key] = [
+                'pid'       => $row['pid'],
+                'title'     => $row['title'],
+                'price'     => (float)$row['price'],
+                'thumbnail' => '/e-web/admin/assets/images/' . rawurlencode($row['thumbnail']),
+                'quantity'  => (int)$row['quantity'],
+                'size'      => $row['size'],
+                'color'     => $row['color'],
+            ];
+        }
+        $stmt->close();
+    }
+}
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,13 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_key'])) {
   <style>
    body {
             font-family: 'Times New Roman', serif;
-  
             /* Thêm fallback font */
         }
         h1, h2, h3, h4, h5,h6 {
             font-family: 'Times New Roman', Times, serif !important;
             color: black;
-            /* Sử dụng font Times New Roman cho tiêu đề */
         }
 
     .card-registration .select-input.form-control[readonly]:not([disabled]) {
@@ -107,12 +151,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_key'])) {
       color: black !important;
     }
 
-    /* Tăng khoảng cách giữa border thead và sản phẩm đầu tiên */
     .tableproduct tbody tr:first-child td {
       padding-top: 18px;
     }
 
-    /* Tăng khoảng cách giữa border tfoot và sản phẩm cuối cùng */
     .tableproduct tbody tr:last-child td {
       padding-bottom: 18px;
     }
@@ -138,6 +180,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_key'])) {
                       </h6>
                     </div>
 
+                    <?php if ($uid <= 0): ?>
+                      <div class="alert alert-warning text-center">
+                        Bạn cần <a href="/e-web/user/page/sign-in/login2.php?redirect=<?= urlencode('/e-web/user/page/cart/cart.php') ?>">đăng nhập</a> để xem giỏ hàng.
+                      </div>
+                    <?php else: ?>
+
                     <div class="p-0">
                       <div class="table-responsive">
                         <table class="tableproduct w-100">
@@ -158,10 +206,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_key'])) {
                           <tbody>
                             <?php
                             $total = 0;
-                            $index = 0; // Khởi tạo biến đếm
+                            $index = 0;
                             if (!empty($cart_items)) {
                               foreach ($cart_items as $key => $item) {
-                                // $item should have: image, name, size, color, quantity, price
                                 $item_total = $item['price'] * $item['quantity'];
                                 $total += $item_total;
                             ?>
@@ -212,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_key'])) {
                                   </td>
                                 </tr>
                             <?php
-                                $index++; // Tăng biến đếm sau mỗi sản phẩm
+                                $index++;
                               }
                             } else {
                               echo '<tr><td colspan="8" class="text-center py-4">Your cart is empty.</td></tr>';
@@ -227,18 +274,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_key'])) {
                                 <span style="font-size: 2rem; font-weight: bold; vertical-align: middle;">₫</span>
                               </th>
                               <th></th>
-
                             </tr>
                           </tfoot>
                         </table>
                       </div>
                     </div>
 
+                    <?php endif; ?>
+
                     <div class="d-flex align-items-center justify-content-between pt-5">
                       <a href="/e-web/user/index.php" class="text-body">
                         <i class="fas fa-long-arrow-alt-left me-2"></i>Back to shop
                       </a>
+                      <?php if ($uid > 0): ?>
                       <a href="../checkout/checkout.php" class="btn btn-dark" id="order-button" style="min-width: 120px;">Order</a>
+                      <?php endif; ?>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -256,25 +307,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_key'])) {
 
   <!-- MDB -->
   <script type="text/javascript" src="js/mdb.min.js"></script>
-  <!-- Custom scripts -->
-  <script type="text/javascript"></script>
   <script>
 document.addEventListener('DOMContentLoaded', function () {
   const orderBtn = document.getElementById('order-button');
-
   if (!orderBtn) return;
-
   orderBtn.addEventListener('click', function (e) {
     const selectedCheckboxes = document.querySelectorAll('.product-checkbox:checked');
     if (selectedCheckboxes.length === 0) {
-      e.preventDefault(); // Ngăn chuyển trang
-      alert("🛒 Bạn chưa có sản phẩm nào trong giỏ hàng!");
+      e.preventDefault();
+      alert("🛒 Bạn chưa chọn sản phẩm nào trong giỏ hàng!");
     }
   });
 });
 </script>
 
 </body>
+
 <script>
 function updateQuantityOnServer(key, quantity) {
   fetch('./update_cart_quantity.php', {
@@ -283,31 +331,14 @@ function updateQuantityOnServer(key, quantity) {
     body: `key=${encodeURIComponent(key)}&quantity=${encodeURIComponent(quantity)}`
   }).then(res => res.json())
     .then(data => {
-      console.log("✅ Server response:", data);
       if (!data.success) {
         alert("Cập nhật thất bại: " + (data.error || ""));
       }
     });
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.quantity-input').forEach(input => {
-    input.addEventListener('change', function () {
-      const qty = parseInt(this.value);
-      const key = this.dataset.key;
-      if (qty > 0 && key) {
-        updateQuantityOnServer(key, qty);
-      }
-    });
-  });
-});
 </script>
 
-</html>
-<!-- Thêm đoạn script để xử lý cập nhật số lượng và tính toán tổng tiền-->
-
-
-<!-- Thêm đoạn script để xử lý xóa sản phẩm trong giỏ hàng -->
+<!-- Script xóa sản phẩm -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.remove-item-form .remove-btn').forEach(function(btn) {
@@ -318,9 +349,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const key = form.getAttribute('data-key');
         fetch('', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'remove_key=' + encodeURIComponent(key)
           })
           .then(res => res.text())
@@ -332,107 +361,89 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 </script>
-<!-- Thêm đoạn script để xử lý chọn tất cả sản phẩm -->
+
+<!-- Script cập nhật tổng tiền & số lượng -->
 <script>
   function updateTotals() {
-  let total = 0;
-  document.querySelectorAll('.product-checkbox').forEach(function(checkbox) { // Bỏ idx vì không dùng
-    const row = checkbox.closest('tr');
-    const input = row.querySelector('.quantity-input');
+    let total = 0;
+    document.querySelectorAll('.product-checkbox').forEach(function(checkbox) {
+      const row   = checkbox.closest('tr');
+      const input = row.querySelector('.quantity-input');
+      const qty   = parseInt(input.value, 10);
+      const index = input.dataset.index;
 
-    const qty = parseInt(input.value, 10); // Lấy SỐ LƯỢNG HIỆN TẠI từ ô input
-    const index = input.dataset.index;
+      let priceString = input.dataset.price.replace(/\./g, '').replace('đ', '').trim();
+      const originalPrice = parseFloat(priceString);
 
-    // LẤY GIÁ GỐC CỦA MỘT ĐƠN VỊ SẢN PHẨM từ data-price của input
-    // Lấy giá trị chuỗi, loại bỏ dấu chấm, và loại bỏ ký tự 'đ'
-let priceString = input.dataset.price.replace(/\./g, '').replace('đ', '').trim();
-const originalPrice = parseFloat(priceString);
+      if (isNaN(originalPrice)) {
+        console.error("Giá không hợp lệ cho index:", index);
+      }
 
-// Thêm một kiểm tra để đảm bảo originalPrice là một số hợp lệ
-if (isNaN(originalPrice)) {
-    console.error("Lỗi: Giá sản phẩm không hợp lệ cho item có index:", input.dataset.index, "Giá trị gốc:", input.dataset.price);
-    // Bạn có thể chọn cách xử lý lỗi ở đây, ví dụ: gán 0 hoặc bỏ qua
-    // originalPrice = 0;
-}
+      const itemTotal = qty * originalPrice;
+      const itemTotalElem = document.getElementById('item-total-value-' + index);
+      if (itemTotalElem) {
+        itemTotalElem.innerHTML = itemTotal.toLocaleString('vi-VN');
+      }
 
-    // Tính TỔNG GIÁ CHO DÒNG SẢN PHẨM HIỆN TẠI: số lượng mới * giá gốc 1 đơn vị
-    const itemTotal = qty * originalPrice;
-
-    // Cập nhật hiển thị tổng giá của dòng sản phẩm (cột "Price")
-    const itemTotalElem = document.getElementById('item-total-value-' + index);
-    if (itemTotalElem) {
-      itemTotalElem.innerHTML = itemTotal.toLocaleString('vi-VN'); // Hiển thị tổng giá mới
-    }
-
-    // Chỉ cộng vào tổng giỏ hàng nếu sản phẩm được chọn
-    if (checkbox.checked) {
-      total += itemTotal;
-    }
-  });
-
-  // Cập nhật tổng giá toàn giỏ hàng
-  document.getElementById('cart-total').innerText = total.toLocaleString('vi-VN');
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Xử lý nút giảm số lượng
-  document.querySelectorAll('.btn-qty-minus').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      const input = this.parentNode.querySelector('.quantity-input');
-      if (parseInt(input.value, 10) > 1) {
-        input.value = parseInt(input.value, 10) - 1;
-        updateTotals(); // Gọi updateTotals để cập nhật cả itemTotal và total
-        updateQuantityOnServer(input.dataset.key, input.value);
+      if (checkbox.checked) {
+        total += itemTotal;
       }
     });
-  });
-
-  // Xử lý nút tăng số lượng
-  document.querySelectorAll('.btn-qty-plus').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      const input = this.parentNode.querySelector('.quantity-input');
-      input.value = parseInt(input.value, 10) + 1;
-      updateTotals(); // Gọi updateTotals để cập nhật cả itemTotal và total
-      updateQuantityOnServer(input.dataset.key, input.value);
-    });
-  });
-
-  // Xử lý sự kiện khi người dùng gõ số lượng trực tiếp
-  document.querySelectorAll('.quantity-input').forEach(function(inputElement) {
-      inputElement.addEventListener('input', function() { // Sử dụng 'input' để cập nhật real-time
-          let enteredQty = parseInt(this.value, 10);
-          if (isNaN(enteredQty) || enteredQty < 1) {
-              this.value = NaN; // Đảm bảo số lượng không âm hoặc NaN
-          }
-          updateTotals(); // Gọi updateTotals để cập nhật cả itemTotal và total
-      });
-      // Tùy chọn: Xử lý khi người dùng nhấn Enter (có thể bỏ nếu input đã xử lý tốt)
-      inputElement.addEventListener('keypress', function(e) {
-          if (e.which === 13) {
-              this.blur(); // Bỏ focus
-              e.preventDefault(); // Ngăn hành vi mặc định của Enter
-          }
-      });
-  });
-
-  // Xử lý checkbox chọn/bỏ chọn sản phẩm
-  document.querySelectorAll('.product-checkbox').forEach(function(checkbox) {
-    checkbox.addEventListener('change', updateTotals);
-  });
-
-  // Xử lý checkbox chọn tất cả
-  const selectAll = document.getElementById('select-all');
-  if (selectAll) {
-    selectAll.addEventListener('change', function() {
-      document.querySelectorAll('.product-checkbox').forEach(function(checkbox) {
-        checkbox.checked = selectAll.checked;
-      });
-      updateTotals();
-    });
+    document.getElementById('cart-total').innerText = total.toLocaleString('vi-VN');
   }
 
-  // Gọi updateTotals lần đầu khi trang tải xong để hiển thị đúng
-  updateTotals();
-});
-</script> 
-<!-- ... script xử lý cart khác ... -->
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.btn-qty-minus').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const input = this.parentNode.querySelector('.quantity-input');
+        if (parseInt(input.value, 10) > 1) {
+          input.value = parseInt(input.value, 10) - 1;
+          updateTotals();
+          updateQuantityOnServer(input.dataset.key, input.value);
+        }
+      });
+    });
+
+    document.querySelectorAll('.btn-qty-plus').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const input = this.parentNode.querySelector('.quantity-input');
+        input.value = parseInt(input.value, 10) + 1;
+        updateTotals();
+        updateQuantityOnServer(input.dataset.key, input.value);
+      });
+    });
+
+    document.querySelectorAll('.quantity-input').forEach(function(inputElement) {
+      inputElement.addEventListener('input', function() {
+        let enteredQty = parseInt(this.value, 10);
+        if (isNaN(enteredQty) || enteredQty < 1) {
+          this.value = NaN;
+        }
+        updateTotals();
+      });
+      inputElement.addEventListener('keypress', function(e) {
+        if (e.which === 13) {
+          this.blur();
+          e.preventDefault();
+        }
+      });
+    });
+
+    document.querySelectorAll('.product-checkbox').forEach(function(checkbox) {
+      checkbox.addEventListener('change', updateTotals);
+    });
+
+    const selectAll = document.getElementById('select-all');
+    if (selectAll) {
+      selectAll.addEventListener('change', function() {
+        document.querySelectorAll('.product-checkbox').forEach(function(checkbox) {
+          checkbox.checked = selectAll.checked;
+        });
+        updateTotals();
+      });
+    }
+
+    updateTotals();
+  });
+</script>
+</html>

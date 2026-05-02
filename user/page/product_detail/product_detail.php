@@ -369,6 +369,22 @@ $product = $result->fetch_assoc();
                                 })
                                 .then(res => res.json())  // Parse JSON response
                                 .then((data) => {
+                                    if (data.notLoggedIn) {
+    // Hiển thị thông báo trước, sau 2 giây mới chuyển hướng
+    const toast = document.getElementById("cart-success-toast");
+    const toastMessage = toast.querySelector("span:last-child");
+    const iconWrapper = toast.querySelector("span:first-child");
+    const checkIcon = toast.querySelector("svg");
+    iconWrapper.style.background = "#f59e0b";
+    checkIcon.style.display = "none";
+    toastMessage.textContent = "Vui lòng đăng nhập để thêm vào giỏ hàng!";
+    toast.style.display = "block";
+    setTimeout(() => {
+        toast.style.display = "none";
+        window.location.href = '/e-web/user/page/sign-in/login2.php?redirect=' + encodeURIComponent(window.location.href);
+    }, 2000);
+    return;
+}
                                     // Lấy toast element
                                     const toast = document.getElementById("cart-success-toast");
                                     const toastMessage = toast.querySelector("span:last-child");
@@ -480,6 +496,8 @@ $product = $result->fetch_assoc();
                                 toggleWishlist(productId);
                             } else {
                                 alert("Bạn cần đăng nhập để thêm sản phẩm vào danh sách yêu thích.");
+                                // Lưu URL trang hiện tại trước khi chuyển hướng
+                                localStorage.setItem('returnAfterLogin', window.location.href);
                                 // Chuyển hướng người dùng đến trang đăng nhập
                                 window.location.href = "/e-web/user/page/sign-in/login2.php"; // Thay bằng đường dẫn trang đăng nhập của bạn
                             }

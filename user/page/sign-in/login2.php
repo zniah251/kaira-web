@@ -138,6 +138,13 @@
 
 </body>
 <script>
+    (function () {
+    const params = new URLSearchParams(window.location.search);
+    const redirectUrl = params.get('redirect');
+    if (redirectUrl) {
+        localStorage.setItem('returnAfterLogin', redirectUrl);
+    }
+})();
     window.addEventListener('DOMContentLoaded', function() {
         const savedLogin = localStorage.getItem('rememberLogin');
         if (savedLogin) {
@@ -223,9 +230,17 @@
                 // Hiển thị toast thay vì alert
                 showToast('Đăng nhập thành công! Chào mừng ' + data.user.uname);
                 
+                // Kiểm tra xem có URL được lưu từ trang trước đó không
+                let redirectUrl = data.redirect; // URL mặc định từ server
+                const savedReturnUrl = localStorage.getItem('returnAfterLogin');
+                if (savedReturnUrl) {
+                    redirectUrl = savedReturnUrl;
+                    localStorage.removeItem('returnAfterLogin'); // Xóa URL đã lưu
+                }
+                
                 // Đợi 1.5 giây để người dùng thấy thông báo rồi mới chuyển trang
                 setTimeout(() => {
-                    window.location.href = data.redirect;
+                    window.location.href = redirectUrl;
                 }, 1500);
             } else {
                 // Đăng nhập thất bại, KHÔNG lưu localStorage

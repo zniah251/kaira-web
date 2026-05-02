@@ -760,6 +760,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         event.preventDefault(); // Chặn hành động mặc định của nút
         if (!isLoggedIn) {
           alert('Vui lòng đăng nhập để sử dụng voucher này.');
+          localStorage.setItem('returnAfterLogin', window.location.href);
           window.location.href = 'page/sign-in/login2.php';
         } else {
           var vID = this.getAttribute('id');
