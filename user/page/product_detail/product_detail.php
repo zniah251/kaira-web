@@ -700,7 +700,7 @@ $product = $result->fetch_assoc();
 
         <!--footer-->
         <footer id="footer" class="footer-custom mt-5">
-            <?php include('../../page/message/message.php'); ?>
+        
             <div class="container">
                 <div class="row justify-content-between py-5">
 

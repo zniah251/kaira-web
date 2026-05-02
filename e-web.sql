@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2026 at 07:09 PM
+-- Generation Time: May 02, 2026 at 11:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,6 +51,14 @@ CREATE TABLE `cart` (
   `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `cart`
+--
+
+INSERT INTO `cart` (`caid`, `uid`, `pid`, `quantity`, `size`, `color`, `create_at`) VALUES
+(3, 1, 99, 2, 'S', 'Hồng', '2026-05-02 15:46:19'),
+(4, 1, 73, 1, 'S', 'Đỏ', '2026-05-02 09:24:55');
+
 -- --------------------------------------------------------
 
 --
@@ -62,63 +70,35 @@ CREATE TABLE `category` (
   `cname` varchar(50) NOT NULL,
   `cslug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `cfile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `parentid` int(11) DEFAULT NULL
+  `parentid` int(11) DEFAULT NULL,
+  `is_product_category` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `category`
 --
 
-INSERT INTO `category` (`cid`, `cname`, `cslug`, `cfile`, `parentid`) VALUES
-(1, 'HOME', NULL, NULL, NULL),
-(2, 'COLLECTIONS', NULL, NULL, NULL),
-(3, 'SHOP', NULL, NULL, NULL),
-(4, 'ON SALE', NULL, NULL, NULL),
-(5, 'INTRODUCTION', NULL, NULL, NULL),
-(6, 'BLOG', NULL, NULL, NULL),
-(7, 'SHOP FOR MEN', NULL, NULL, 3),
-(8, 'SHOP FOR WOMEN', NULL, NULL, 3),
-(9, 'SHORTS', 'shorts', 'shorts.php', 7),
-(10, 'TROUSERS', 'trousers', 'trousers.php', 7),
-(11, 'SHIRTS', 'shirts', 'shirts.php', 7),
-(12, 'T-SHIRTS', 't-shirts', 't-shirts.php', 7),
-(13, 'TOPS', 'top', 'top.php', 8),
-(14, 'DRESSES', 'dresses', 'dresses.php', 8),
-(15, 'PANTS', 'pants', 'pants.php', 8),
-(16, 'SKIRTS', 'skirts', 'skirts.php', 8),
-(17, 'ABOUT US', NULL, NULL, 5),
-(18, 'MEMBERSHIP', NULL, NULL, 5),
-(19, 'RECRUITMENT', NULL, NULL, 5),
-(20, 'CONTACT', NULL, NULL, 5);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `galery`
---
-
-CREATE TABLE `galery` (
-  `gid` int(11) NOT NULL,
-  `pid` int(11) NOT NULL,
-  `thumbnail` varchar(500) NOT NULL,
-  `subpic` varchar(500) NOT NULL,
-  `title` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `message`
---
-
-CREATE TABLE `message` (
-  `mid` int(11) NOT NULL,
-  `uid` int(11) NOT NULL,
-  `content` longtext NOT NULL,
-  `image` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `role` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `category` (`cid`, `cname`, `cslug`, `cfile`, `parentid`, `is_product_category`) VALUES
+(1, 'HOME', NULL, NULL, NULL, 0),
+(2, 'COLLECTIONS', NULL, NULL, NULL, 0),
+(3, 'SHOP', NULL, NULL, NULL, 0),
+(4, 'ON SALE', NULL, NULL, NULL, 0),
+(5, 'INTRODUCTION', NULL, NULL, NULL, 0),
+(6, 'BLOG', NULL, NULL, NULL, 0),
+(7, 'SHOP FOR MEN', NULL, NULL, 3, 0),
+(8, 'SHOP FOR WOMEN', NULL, NULL, 3, 0),
+(9, 'SHORTS', 'shorts', 'shorts.php', 7, 1),
+(10, 'TROUSERS', 'trousers', 'trousers.php', 7, 1),
+(11, 'SHIRTS', 'shirts', 'shirts.php', 7, 1),
+(12, 'T-SHIRTS', 't-shirts', 't-shirts.php', 7, 1),
+(13, 'TOPS', 'top', 'top.php', 8, 1),
+(14, 'DRESSES', 'dresses', 'dresses.php', 8, 1),
+(15, 'PANTS', 'pants', 'pants.php', 8, 1),
+(16, 'SKIRTS', 'skirts', 'skirts.php', 8, 1),
+(17, 'ABOUT US', NULL, NULL, 5, 0),
+(18, 'MEMBERSHIP', NULL, NULL, 5, 0),
+(19, 'RECRUITMENT', NULL, NULL, 5, 0),
+(20, 'CONTACT', NULL, NULL, 5, 0);
 
 -- --------------------------------------------------------
 
@@ -145,7 +125,9 @@ CREATE TABLE `orders` (
 
 INSERT INTO `orders` (`oid`, `uid`, `totalfinal`, `price`, `vid`, `destatus`, `paymethod`, `paystatus`, `paytime`, `create_at`) VALUES
 (12, 1, 428000.00, 398000.00, NULL, 'Pending', 'COD', 'Pending', '2026-05-01 09:02:16', '2026-05-01 09:02:16'),
-(13, 1, 280000.00, 250000.00, NULL, 'Pending', 'MOMO', 'Pending', '2026-05-01 09:02:49', '2026-05-01 09:02:49');
+(13, 1, 280000.00, 250000.00, NULL, 'Pending', 'MOMO', 'Pending', '2026-05-01 09:02:49', '2026-05-01 09:02:49'),
+(14, 1, 30000.00, 0.00, NULL, 'Pending', '', 'Paid', '2026-05-02 15:19:34', '2026-05-02 15:19:34'),
+(15, 1, 628000.00, 598000.00, NULL, 'Pending', '', 'Paid', '2026-05-02 15:46:29', '2026-05-02 15:46:29');
 
 -- --------------------------------------------------------
 
@@ -169,7 +151,8 @@ CREATE TABLE `order_detail` (
 
 INSERT INTO `order_detail` (`did`, `oid`, `pid`, `quantity`, `size`, `color`, `price`) VALUES
 (4, 12, 147, 2, 'S', 'Đen', 199000.00),
-(5, 13, 20, 1, 'M', 'Xanh dương', 250000.00);
+(5, 13, 20, 1, 'M', 'Xanh dương', 250000.00),
+(6, 15, 99, 2, 'S', 'Hồng', 299000.00);
 
 -- --------------------------------------------------------
 
@@ -250,7 +233,7 @@ INSERT INTO `product` (`pid`, `cid`, `title`, `price`, `discount`, `thumbnail`, 
 (93, 13, 'Romie Cami Top', 200000.00, 180000.00, 'Romie-Cami-Top.jpg', 'Romie-Cami-Top2.jpg', NULL, '...', 10, 'S', 'M', NULL, 5, 0, 'Be', NULL),
 (95, 13, 'Timo Jacket', 250000.00, 220000.00, 'Timo-Jacket.jpg', 'Timo-Jacket2.jpg', 'Timo-Jacket3.jpg', 'Áo khoác Timo mang đến sự năng động và trẻ trung với thiết kế croptop sành điệu, rất phù hợp cho những ngày se lạnh hoặc để tạo điểm nhấn cho trang phục. Khoác hoodie này có gam màu kem sữa nhẹ nhàng, dễ phối đồ, cùng với khóa kéo phía trước tiện lợi. Túi áo được thiết kế ở hai bên, viền may nổi bật, thêm phần cá tính. Chất liệu nỉ bông mềm mại, ấm áp, có mũ trùm đầu và dây rút điều chỉnh, mang lại sự thoải mái tối đa cho người mặc. Áo khoác Timo là lựa chọn lý tưởng cho các hoạt động ngoài trời, dạo phố hoặc đơn giản là một item thời trang hàng ngày.', 10, 'S', 'M', NULL, 5, 0, 'Be', NULL),
 (97, 14, 'Chiara Dress', 299000.00, 279000.00, 'Chiara-Dress.jpg', 'Chiara-Dress2.jpg', 'Chiara-Dress3.jpg', '...', 10, 'M', 'L', 'S', 5, 0, 'Trắng', NULL),
-(99, 14, 'Peachy Dress', 299000.00, 280000.00, 'Peachy-Dress.jpg', 'Peachy-Dress2.jpg', NULL, '...', 10, 'S', 'M', 'L', 5, 0, 'Hồng', NULL),
+(99, 14, 'Peachy Dress', 299000.00, 280000.00, 'Peachy-Dress.jpg', 'Peachy-Dress2.jpg', NULL, '...', 8, 'S', 'M', 'L', 5, 2, 'Hồng', NULL),
 (101, 14, 'Pandora Dress', 299000.00, 280000.00, 'Pandora-Dress.jpg', 'Pandora-Dress2.jpg', NULL, '...', 10, 'S', 'M', NULL, 5, 0, 'Xanh đậm', NULL),
 (103, 14, 'Samantha Dress', 299000.00, 269000.00, 'Samantha-Dress.jpg', 'Samantha-Dress2.jpg', 'Samantha-Dress3.jpg', '...', 10, 'L', 'M', 'S', 5, 0, 'Be', NULL),
 (105, 14, 'Flurry Dress', 250000.00, 220000.00, 'Flurry-Dress.jpg', 'Flurry-Dress2.jpg', 'Flurry-Dress3.jpg', '...', 10, 'S', 'M', NULL, 5, 0, 'Caro', NULL),
@@ -265,7 +248,7 @@ INSERT INTO `product` (`pid`, `cid`, `title`, `price`, `discount`, `thumbnail`, 
 (121, 15, 'Bonew Parachute Short', 199000.00, 179000.00, 'Bonew-Parachute-Short.jpg', 'Bonew-Parachute-Short2.jpg', NULL, 'Khám phá vẻ đẹp trẻ trung và năng động cùng quần short Bonew, sắc kem dịu nhẹ mang đến cảm giác bay bổng, thoải mái. Thiết kế phom dáng rộng rãi, lấy cảm hứng từ parachute, kết hợp chi tiết nút cài độc đáo và dây rút điều chỉnh, tạo nên sự phá cách đầy cuốn hút. Một lựa chọn lý tưởng cho những ngày hè rực rỡ, giúp nàng tự tin thể hiện phong thái tự do và đầy cá tính.', 10, 'S', 'M', NULL, 5, 0, 'Be', NULL),
 (123, 15, 'Fomos Jean Short dark blue', 299000.00, 280000.00, 'Fomos-Jean-Short-dark-blue.jpg', 'Fomos-Jean-Short-dark-blue2.jpg', 'Fomos-Jean-Short-light-blue2.jpg', 'Khám phá vẻ đẹp cá tính cùng Fomos Jean Short, sắc xanh denim đậm thời thượng mang đến phong thái mạnh mẽ và hiện đại. Thiết kế lửng ống rộng với độ dài ngang bắp chân tạo nên sự thoải mái tuyệt đối và vẻ ngoài phá cách. Đây là lựa chọn hoàn hảo cho những ngày hè năng động, dễ dàng kết hợp cùng nhiều kiểu áo để tạo nên dấu ấn riêng biệt đầy cuốn hút.', 10, 'L', 'M', 'S', 5, 0, 'dark jeans', ''),
 (124, 15, 'Fomos Jean Short dark blue', 299000.00, 280000.00, 'Fomos-Jean-Short-light-blue2.jpg', 'Fomos-Jean-Short-dark-blue2.jpg', 'Fomos-Jean-Short-dark-blue.jpg', 'Khám phá vẻ đẹp cá tính cùng Fomos Jean Short, sắc xanh denim đậm thời thượng mang đến phong thái mạnh mẽ và hiện đại. Thiết kế lửng ống rộng với độ dài ngang bắp chân tạo nên sự thoải mái tuyệt đối và vẻ ngoài phá cách. Đây là lựa chọn hoàn hảo cho những ngày hè năng động, dễ dàng kết hợp cùng nhiều kiểu áo để tạo nên dấu ấn riêng biệt đầy cuốn hút.', 10, 'L', 'M', 'S', 5, 0, 'light jeans', ''),
-(127, 15, 'Hebe Jeans', 299000.00, 280000.00, 'hebe-jeans.jpg', NULL, NULL, 'Nắm bắt tinh thần phóng khoáng với chiếc quần jean Hebe, sắc kem nhẹ nhàng thổi làn gió mới vào phong cách thường nhật. Thiết kế ống rộng thời thượng kết hợp cùng chi tiết xếp ly tinh tế, tạo nên vẻ ngoài bay bổng, thanh lịch mà vẫn giữ trọn sự thoải mái. Đây là item lý tưởng cho những ngày dài năng động, giúp nàng tự tin thể hiện cá tính riêng đầy cuốn hút.', 10, 'L', NULL, NULL, 5, 0, 'Trắng', NULL),
+(127, 15, 'Hebee Jeans', 299000.00, 280000.00, 'hebe-jeans.jpg', '', '', 'Nắm bắt tinh thần phóng khoáng với chiếc quần jean Hebe, sắc kem nhẹ nhàng thổi làn gió mới vào phong cách thường nhật. Thiết kế ống rộng thời thượng kết hợp cùng chi tiết xếp ly tinh tế, tạo nên vẻ ngoài bay bổng, thanh lịch mà vẫn giữ trọn sự thoải mái. Đây là item lý tưởng cho những ngày dài năng động, giúp nàng tự tin thể hiện cá tính riêng đầy cuốn hút.', 10, 'L', '', '0', 0, 0, 'Trắng', ''),
 (128, 15, 'Hebe Jeans', 200000.00, 280000.00, 'hebe-jeans2.jpg', NULL, NULL, 'Nắm bắt tinh thần phóng khoáng với chiếc quần jean Hebe, sắc kem nhẹ nhàng thổi làn gió mới vào phong cách thường nhật. Thiết kế ống rộng thời thượng kết hợp cùng chi tiết xếp ly tinh tế, tạo nên vẻ ngoài bay bổng, thanh lịch mà vẫn giữ trọn sự thoải mái. Đây là item lý tưởng cho những ngày dài năng động, giúp nàng tự tin thể hiện cá tính riêng đầy cuốn hút.', 10, 'M', NULL, NULL, 5, 0, 'Trắng', NULL),
 (129, 15, 'Pamin Pants', 250000.00, 220000.00, 'Pamin-Pants.jpg', 'Pamin-Pants2.jpg', 'Pamin-Pants3.jpg', 'Khám phá sự tự do trong phong cách với chiếc quần Pamin Pants, sắc xanh baby dịu mát mang đến làn gió tươi mới. Thiết kế ống rộng thoải mái kết hợp cùng túi hộp năng động, tạo nên vẻ ngoài cá tính nhưng vẫn giữ được nét thanh thoát, nhẹ nhàng. Item hoàn hảo cho những ngày cần sự linh hoạt, dễ dàng phối hợp cho mọi hoạt động, từ dạo phố đến những chuyến đi khám phá.', 10, 'L', 'M', 'S', 5, 0, 'Xanh', NULL),
 (131, 15, 'Pull Pants', 299000.00, 279000.00, 'pull-pants.jpg', 'pull-pants2.jpg', 'pull-pants3.jpg', 'Đón chào sự trở lại của phong cách retro cùng chiếc quần jean Pull-Pants, sắc xanh denim cổ điển hòa quyện cùng nét hiện đại. Thiết kế ống rộng thời thượng mang đến sự thoải mái tối ưu và vẻ ngoài phóng khoáng, trong khi đường may tinh tế tạo điểm nhấn cho tổng thể trang phục. Đây là mảnh ghép lý tưởng cho những bộ cánh dạo phố đầy cá tính hay những buổi hẹn hò, giúp nàng tự do thể hiện chất riêng đầy thu hút.', 10, 'L', NULL, NULL, 5, 0, 'Xanh', NULL),
@@ -303,24 +286,6 @@ CREATE TABLE `resetpass` (
   `email` varchar(50) NOT NULL,
   `resettime` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `code` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `review`
---
-
-CREATE TABLE `review` (
-  `reid` int(11) NOT NULL,
-  `pid` int(11) NOT NULL,
-  `uid` int(11) NOT NULL,
-  `rating` int(11) NOT NULL,
-  `content` longtext NOT NULL,
-  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `picture` varchar(255) NOT NULL,
-  `subpic1` varchar(255) NOT NULL,
-  `reid_parent` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -368,7 +333,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`uid`, `uname`, `email`, `phonenumber`, `address`, `password`, `google_id`, `created_at`, `updated_at`, `email_verified`, `rid`, `balance`) VALUES
-(1, 'test', '23520040@gm.uit.edu.vn', '0816810784', 's', '$2y$10$8DNlzLhnq354BvOur/cD/.zsoRmDI3niEYxp3fpM6yWJ67gG9lvxm', NULL, '2026-05-01 14:55:10', '2026-05-01 15:52:40', 0, 2, 1000000);
+(1, 'test', '23520040@gm.uit.edu.vn', '0816810784', 's', '$2y$10$8DNlzLhnq354BvOur/cD/.zsoRmDI3niEYxp3fpM6yWJ67gG9lvxm', NULL, '2026-05-01 14:55:10', '2026-05-02 22:46:29', 0, 2, 342000),
+(2, 'admin', 'a@gmail.com', '1231241231', '', '$2y$10$/ZdHYz3668gxCCjszAGSSuBaaTi1x9Xv56vJHqes6tmDa4NIJzc4O', NULL, '2026-05-03 04:08:07', '2026-05-03 04:08:29', 0, 1, 1000000);
 
 -- --------------------------------------------------------
 
@@ -427,6 +393,13 @@ CREATE TABLE `wishlist` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `wishlist`
+--
+
+INSERT INTO `wishlist` (`wid`, `uid`, `pid`, `create_at`) VALUES
+(2, 1, 97, '2026-05-02 08:44:09');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -450,21 +423,6 @@ ALTER TABLE `cart`
 ALTER TABLE `category`
   ADD PRIMARY KEY (`cid`),
   ADD KEY `parentid_FK` (`parentid`);
-
---
--- Indexes for table `galery`
---
-ALTER TABLE `galery`
-  ADD PRIMARY KEY (`gid`),
-  ADD KEY `pid_FK` (`pid`);
-
---
--- Indexes for table `message`
---
-ALTER TABLE `message`
-  ADD PRIMARY KEY (`mid`),
-  ADD KEY `uidFK` (`uid`),
-  ADD KEY `roleFK` (`role`);
 
 --
 -- Indexes for table `orders`
@@ -497,15 +455,6 @@ ALTER TABLE `resetpass`
   ADD UNIQUE KEY `code` (`code`),
   ADD KEY `useridFK` (`uid`),
   ADD KEY `emailFK` (`email`);
-
---
--- Indexes for table `review`
---
-ALTER TABLE `review`
-  ADD PRIMARY KEY (`reid`),
-  ADD KEY `proFK` (`pid`),
-  ADD KEY `userFK` (`uid`),
-  ADD KEY `reid_parent` (`reid_parent`);
 
 --
 -- Indexes for table `role`
@@ -557,7 +506,7 @@ ALTER TABLE `blog`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `caid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `caid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `category`
@@ -566,28 +515,16 @@ ALTER TABLE `category`
   MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT for table `galery`
---
-ALTER TABLE `galery`
-  MODIFY `gid` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `message`
---
-ALTER TABLE `message`
-  MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `oid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `oid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `order_detail`
 --
 ALTER TABLE `order_detail`
-  MODIFY `did` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `did` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -602,12 +539,6 @@ ALTER TABLE `resetpass`
   MODIFY `reserid` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `review`
---
-ALTER TABLE `review`
-  MODIFY `reid` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
@@ -617,7 +548,7 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user_voucher`
@@ -635,7 +566,7 @@ ALTER TABLE `voucher`
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `wid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `wid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -653,19 +584,6 @@ ALTER TABLE `cart`
 --
 ALTER TABLE `category`
   ADD CONSTRAINT `parentid_FK` FOREIGN KEY (`parentid`) REFERENCES `category` (`cid`);
-
---
--- Constraints for table `galery`
---
-ALTER TABLE `galery`
-  ADD CONSTRAINT `pid_FK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`);
-
---
--- Constraints for table `message`
---
-ALTER TABLE `message`
-  ADD CONSTRAINT `roleFK` FOREIGN KEY (`role`) REFERENCES `users` (`rid`),
-  ADD CONSTRAINT `uidFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
 
 --
 -- Constraints for table `orders`
@@ -693,14 +611,6 @@ ALTER TABLE `product`
 ALTER TABLE `resetpass`
   ADD CONSTRAINT `emailFK` FOREIGN KEY (`email`) REFERENCES `users` (`email`),
   ADD CONSTRAINT `useridFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
-
---
--- Constraints for table `review`
---
-ALTER TABLE `review`
-  ADD CONSTRAINT `proFK` FOREIGN KEY (`pid`) REFERENCES `product` (`pid`),
-  ADD CONSTRAINT `reid_parent` FOREIGN KEY (`reid_parent`) REFERENCES `review` (`reid`),
-  ADD CONSTRAINT `userFK` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
 
 --
 -- Constraints for table `users`

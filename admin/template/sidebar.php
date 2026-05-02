@@ -129,14 +129,12 @@
         <span class="menu-icon">
           <i class="mdi mdi-message"></i>
         </span>
-        <span class="menu-title">Manage</span>
+        <span class="menu-title">Manage Blog</span>
         <i class="menu-arrow"></i>
       </a>
       <div class="collapse" id="manage-menu">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> <a class="nav-link" href="/e-web/admin/pages/blog/blog.php">Manage Blog</a></li>
-          <li class="nav-item"> <a class="nav-link" href="/e-web/admin/pages/message/admin_chat.php">Manage Message</a></li>
-        </ul>
       </div>
     </li>
 
