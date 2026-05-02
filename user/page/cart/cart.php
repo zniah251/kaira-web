@@ -287,7 +287,9 @@ $conn->close();
                         <i class="fas fa-long-arrow-alt-left me-2"></i>Back to shop
                       </a>
                       <?php if ($uid > 0): ?>
-                      <a href="../checkout/checkout.php" class="btn btn-dark" id="order-button" style="min-width: 120px;">Order</a>
+                      <!-- Form ẩn để POST các sản phẩm được chọn sang checkout -->
+                      <form method="POST" action="../checkout/checkout.php" id="order-form"></form>
+                      <button type="button" class="btn btn-dark" id="order-button" style="min-width: 120px;">Order</button>
                       <?php endif; ?>
                     </div>
                   </div>
@@ -314,9 +316,34 @@ document.addEventListener('DOMContentLoaded', function () {
   orderBtn.addEventListener('click', function (e) {
     const selectedCheckboxes = document.querySelectorAll('.product-checkbox:checked');
     if (selectedCheckboxes.length === 0) {
-      e.preventDefault();
       alert("🛒 Bạn chưa chọn sản phẩm nào trong giỏ hàng!");
+      return;
     }
+
+    const form = document.getElementById('order-form');
+    // Xóa hidden inputs cũ nếu có
+    form.querySelectorAll('input[type=hidden]').forEach(function(el) { el.remove(); });
+
+    selectedCheckboxes.forEach(function(checkbox) {
+      const row = checkbox.closest('tr');
+      const input = row.querySelector('.quantity-input');
+      const key = input.dataset.key;
+      const qty = input.value;
+
+      const hKey = document.createElement('input');
+      hKey.type = 'hidden';
+      hKey.name = 'selected_keys[]';
+      hKey.value = key;
+      form.appendChild(hKey);
+
+      const hQty = document.createElement('input');
+      hQty.type = 'hidden';
+      hQty.name = 'selected_qty[' + key + ']';
+      hQty.value = qty;
+      form.appendChild(hQty);
+    });
+
+    form.submit();
   });
 });
 </script>

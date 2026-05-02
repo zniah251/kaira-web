@@ -1,5 +1,51 @@
 <?php
 session_start();
+
+// Nếu POST từ cart.php với selected_keys thì build và lưu vào session
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_keys'])) {
+    require_once "../../../connect.php";
+    $uid_tmp = isset($_SESSION['uid']) ? (int)$_SESSION['uid'] : 0;
+    $selected_keys = $_POST['selected_keys'];
+    $selected_qty  = $_POST['selected_qty'] ?? [];
+
+    $cart_items_new = [];
+    if ($uid_tmp > 0 && !empty($selected_keys)) {
+        foreach ($selected_keys as $key) {
+            $parts = explode('_', $key, 3);
+            if (count($parts) !== 3) continue;
+            $pid   = (int)$parts[0];
+            $size  = $parts[1] === 'nosize'  ? '' : $parts[1];
+            $color = $parts[2] === 'nocolor' ? '' : $parts[2];
+            $qty   = max(1, (int)($selected_qty[$key] ?? 1));
+
+            $stmt2 = $conn->prepare(
+                "SELECT p.pid, p.title, p.price, p.thumbnail, c.size, c.color
+                 FROM cart c JOIN product p ON p.pid = c.pid
+                 WHERE c.uid = ? AND c.pid = ? AND c.size = ? AND c.color = ?"
+            );
+            $stmt2->bind_param("iiss", $uid_tmp, $pid, $size, $color);
+            $stmt2->execute();
+            $row2 = $stmt2->get_result()->fetch_assoc();
+            $stmt2->close();
+            if ($row2) {
+                $sz2  = $row2['size']  !== '' ? $row2['size']  : 'nosize';
+                $clr2 = $row2['color'] !== '' ? $row2['color'] : 'nocolor';
+                $k2   = $row2['pid'] . '_' . $sz2 . '_' . $clr2;
+                $cart_items_new[$k2] = [
+                    'pid'       => $row2['pid'],
+                    'title'     => $row2['title'],
+                    'price'     => (float)$row2['price'],
+                    'thumbnail' => '/e-web/admin/assets/images/' . rawurlencode($row2['thumbnail']),
+                    'quantity'  => $qty,
+                    'size'      => $row2['size'],
+                    'color'     => $row2['color'],
+                ];
+            }
+        }
+    }
+    $_SESSION['cart'] = $cart_items_new;
+}
+
 $cart_items = $_SESSION['cart'] ?? [];
 
 // Check if user is logged in
