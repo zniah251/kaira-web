@@ -161,6 +161,8 @@ cd e-web
 # Option 2: Download ZIP và giải nén
 # - Download ZIP từ GitHub
 # - Giải nén vào thư mục Apache
+
+# Option 2: Source code trong docker
 ```
 
 ### **Bước 3: Đặt Thư Mục Dự Án**
@@ -214,7 +216,6 @@ CREATE DATABASE `e-web` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```bash
 # Từ terminal/command prompt:
 mysql -u root -p e-web < C:\path\to\e-web\e-web.sql
-mysql -u root -p e-web < C:\path\to\e-web\product.sql
 
 # Hoặc sử dụng phpMyAdmin:
 # - Mở http://localhost/phpmyadmin
@@ -482,8 +483,8 @@ e-web/
 | Thông Tin | Giá Trị |
 |-----------|--------|
 | **URL** | `http://localhost/e-web/admin` |
-| **Email** | Sẽ được cấp trong database hoặc tạo thủ công |
-| **Password** | Sẽ được cấp trong database hoặc tạo thủ công |
+| **Email** | a@gmail.com |
+| **Password** | 123456 |
 
 **Để tạo admin account thủ công:**
 ```sql
@@ -506,8 +507,8 @@ VALUES ('Admin', 'admin@kairashop.com', '0901234567', '123 Đường XYZ', 'admi
 | Thông Tin | Giá Trị |
 |-----------|--------|
 | **URL** | `http://localhost/e-web` |
-| **Đăng Ký** | Bấm "Đăng ký" trên trang chủ |
-| **Đăng Nhập** | Sử dụng tài khoản vừa tạo |
+| **Đăng Ký** | 23520040@gm.uit.edu.vn |
+| **Đăng Nhập** | 123456 |
 
 ---
 
@@ -635,6 +636,16 @@ ALTER TABLE product CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ---
 
 ## Ghi Chú Quan Trọng
+
+**Lưu ý về cổng:**
+
+Các cổng mặc định trong `docker-compose.yml`:
+- Website: **8080**
+- phpMyAdmin: **8888**  
+- MySQL: **3307**
+
+Nếu máy bạn bị xung đột cổng, mở `docker-compose.yml` 
+và đổi số bên trái dấu `:` trong phần `ports`.
 
 **SECURITY WARNINGS:**
 - Không commit file `.env` vào Git (chứa sensitive data)

@@ -346,7 +346,7 @@ CREATE TABLE `user_voucher` (
   `uvid` int(11) NOT NULL,
   `uid` int(11) NOT NULL,
   `vid` int(11) NOT NULL,
-  `getting_at` date NOT NULL DEFAULT current_timestamp(),
+  `getting_at` date NOT NULL DEFAULT (CURRENT_DATE),
   `status` enum('unused','used','expired') NOT NULL DEFAULT 'unused'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
