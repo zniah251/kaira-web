@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
 // Bắt đầu session để giữ sản phẩm không đổi khi load lại trang
 if (session_status() === PHP_SESSION_NONE) {
@@ -91,7 +89,8 @@ $all_pids = $_SESSION['summer_pids_final'];
 $block1_pids = array_slice($all_pids, 0, 4);
 $block2_pids = array_slice($all_pids, 4, 4);
 ?>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

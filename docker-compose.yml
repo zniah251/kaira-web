@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Container PHP + Apache
+  php-web:
+    build: .
+    container_name: kaira-web
+    ports:
+      - "80:80"
+    depends_on:
+      - mysql-db
+    volumes:
+      - .:/var/www/html/e-web
+    networks:
+      - kaira-network
+
+  # Container MySQL
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: e-web
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./e-web.sql:/docker-entrypoint-initdb.d/e-web.sql
+      - mysql-data:/var/lib/mysql
+    networks:
+      - kaira-network
+
+volumes:
+  mysql-data:
+
+networks:
+  kaira-network:
+    driver: bridge

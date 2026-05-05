@@ -1,5 +1,5 @@
 <?php
-$servername = "localhost";
+$servername = "mysql-db";
 $username = "root";
 $password = "";
 $dbname = "e-web";

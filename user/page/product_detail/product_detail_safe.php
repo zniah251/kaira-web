@@ -6,7 +6,7 @@ if ($isLoggedIn) {
     $username = $_SESSION['username'] ?? 'Khách hàng'; // Lấy tên người dùng từ session
 }
 // connect.php
-$servername = "localhost";
+$servername = "mysql-db";
 $username = "root";
 $password = "";
 $dbname = "e-web";
