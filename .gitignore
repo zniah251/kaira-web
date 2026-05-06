@@ -1,9 +1,0 @@
-# Secrets
-.env
-
-# Local config
-connect.php
-
-# docker
-docker-compose.yml
-Dockerfile

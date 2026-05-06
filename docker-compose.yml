@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+
+  # ── Service 1: Web server (PHP + Apache) ──────────────────────
+  web:
+    build: .
+    container_name: kaira_web
+    ports:
+      - "8080:80"          # Truy cập tại localhost:8080
+    volumes:
+      - .:/var/www/html    # Mount code để thay đổi live
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=e-web
+    networks:
+      - kaira_network
+
+  # ── Service 2: MySQL Database ──────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: kaira_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: e-web
+    ports:
+      - "3307:3306"        # Dùng 3307 để tránh xung đột với MySQL local
+    volumes:
+      - db_data:/var/lib/mysql          # Lưu data vĩnh viễn
+      - ./e-web.sql:/docker-entrypoint-initdb.d/init.sql  # Auto import SQL
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kaira_network
+
+  # ── Service 3: phpMyAdmin ──────────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: kaira_phpmyadmin
+    restart: always
+    ports:
+      - "8888:80"          # Truy cập tại localhost:8888
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+    depends_on:
+      - db
+    networks:
+      - kaira_network
+
+# ── Volumes & Networks ─────────────────────────────────────────
+volumes:
+  db_data:
+
+networks:
+  kaira_network:
+    driver: bridge
